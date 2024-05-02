@@ -49,3 +49,16 @@ body {
 	mask-composite: exclude;
 	-webkit-mask-composite: xor;
 }
+
+.animate {
+	animation: movePath 4s ease-in-out infinite alternate;
+}
+
+@keyframes movePath {
+	0% {
+		transform: translateX(0);
+	}
+	100% {
+		transform: translateX(100px);
+	}
+}

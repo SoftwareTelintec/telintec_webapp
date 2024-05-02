@@ -4,8 +4,11 @@ import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { login } from '@/actions/login';
 import Button from '@/app/components/ui/Button';
+import { useState } from 'react';
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 
 function CustomForm() {
+	const [showPassword, setShowPassword] = useState(false);
 	const {
 		handleSubmit,
 		register,
@@ -34,7 +37,7 @@ function CustomForm() {
 			</label>
 			<input
 				type="text"
-				className="p-3 rounded block mb-2 bg-slate-900 text-slate-300 w-full"
+				className="p-3 rounded block mb-2 bg-[#D9D9D9] text-neutral-600 w-full"
 				placeholder="Ingrese su nombre de usuario"
 				{...register('username', {
 					required: {
@@ -50,9 +53,10 @@ function CustomForm() {
 			<label htmlFor="password" className="text-slate-200 mb-2 block text-sm">
 				Contrasena:
 			</label>
+
 			<input
-				type="password"
-				className="p-3 rounded block mb-2 bg-slate-900 text-slate-300 w-full"
+				type={showPassword ? 'text' : 'password'}
+				className="p-3 rounded mb-2 relative bg-[#D9D9D9] text-neutral-600 w-full"
 				placeholder="********"
 				{...register('password', {
 					required: {
@@ -61,6 +65,17 @@ function CustomForm() {
 					},
 				})}
 			/>
+
+			<span
+				className="absolute right-8 w-12 h-12 cursor-pointer"
+				onClick={() => setShowPassword(!showPassword)}
+			>
+				{showPassword ? (
+					<EyeSlashIcon className="p-1" />
+				) : (
+					<EyeIcon className="p-1" />
+				)}
+			</span>
 
 			{errors.password && (
 				<p className="text-red-500 text-sm">{`${errors?.password?.message}`}</p>

@@ -10,6 +10,7 @@ const config: Config = {
 		extend: {
 			backgroundImage: {
 				'svg-pattern': 'url(/img/svg-pattern.svg)',
+				'svg-robot': 'url(/img/robot-svg-bg.svg)',
 			},
 		},
 	},
