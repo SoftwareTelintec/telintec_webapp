@@ -21,7 +21,7 @@ export default function CalendarSelector({
 				selected={selectedDate}
 				onChange={onChange}
 				placeholderText="Selecciona una fecha"
-				className="border border-indigo-600 rounded-md w-full"
+				className="border border-indigo-600 rounded-md w-full bg-[#D9D9D9] text-neutral-600"
 			/>
 		</div>
 	);

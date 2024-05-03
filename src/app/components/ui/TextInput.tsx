@@ -13,7 +13,7 @@ export default function TextInput({ label, ...rest }: TextInputProps) {
 			<label htmlFor={rest?.name}>{label}</label>
 			<input
 				{...rest}
-				className="border border-[#cccccc] rounded-md p-1 w-full"
+				className="border border-[#D9D9D9] bg-[#D9D9D9] rounded-md p-1 w-full text-neutral-600"
 			/>
 		</div>
 	);
