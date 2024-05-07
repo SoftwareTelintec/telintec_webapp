@@ -113,8 +113,8 @@ const Navigation = () => {
 					initial="close"
 					className={`flex flex-col z-10 gap-20 p-5 absolute top-0 left-0 h-full shadow transition-colors duration-300 ${
 						isOpen
-							? 'bg-neutral-900  shadow-neutral-600'
-							: 'bg-neutral-900/50  shadow-neutral-600/50'
+							? 'bg-[#D9D9D9]/70  shadow-neutral-600'
+							: 'bg-[#D9D9D9]/50  shadow-[##5C5F65]/50'
 					}`}
 				>
 					<div className="flex flex-row w-full justify-between place-items-center">
@@ -127,9 +127,9 @@ const Navigation = () => {
 								xmlns="http://www.w3.org/2000/svg"
 								fill="none"
 								viewBox="0 0 24 24"
-								strokeWidth={1}
+								strokeWidth={2}
 								stroke="currentColor"
-								className="w-8 h-8 stroke-neutral-200"
+								className="w-8 h-8 stroke-neutral-900"
 							>
 								<motion.path
 									strokeLinecap="round"
@@ -146,6 +146,9 @@ const Navigation = () => {
 						</button>
 					</div>
 					<div className="flex flex-col gap-3">
+						{isOpen && (
+							<span className="uppercase text-xs text-neutral-600">main</span>
+						)}
 						{permissions.includes('/auth/dashboard') && (
 							<NavigationLink
 								name="Dashboard"
@@ -194,21 +197,23 @@ const Navigation = () => {
 							</ProjectLink>
 						)}
 					</div>
-
+					{isOpen && (
+						<span className="uppercase text-xs text-neutral-600">settings</span>
+					)}
 					{isOpen ? (
 						<button
-							className="w-full flex flex-row gap-2 items-center justify-center bg-neutral-400  shadow-neutral-200 text-neutral-800 px-2 py-1 rounded-md hover:scale-[0.95] transition-colors delay-200 duration-300 text-sm"
+							className="w-full flex flex-row gap-2 items-center justify-center  px-2 py-1 rounded-md hover:scale-[1.05] transition-colors duration-300 text-sm bg-[#050B21] text-neutral-200 shadow-[#050B21]"
 							onClick={() => signOut()}
 						>
 							<span>Salir</span>
-							<ArrowLeftStartOnRectangleIcon />
+							<ArrowLeftStartOnRectangleIcon className="min-w-8 w-8" />
 						</button>
 					) : (
 						<button
-							className="w-full flex flex-row items-center justify-center bg-neutral-400  shadow-neutral-200 text-neutral-800 px-2 py-1 rounded-md hover:scale-[0.95] transition-colors delay-200 duration-300 text-sm"
+							className="w-full flex flex-row gap-2 items-center justify-center  px-2 py-1 rounded-md hover:scale-[1.05] transition-colors duration-300 text-sm bg-[#050B21] text-neutral-200 shadow-[#050B21]"
 							onClick={() => signOut()}
 						>
-							<ArrowLeftStartOnRectangleIcon />
+							<ArrowLeftStartOnRectangleIcon className="min-w-8 w-8" />
 						</button>
 					)}
 				</motion.nav>

@@ -43,12 +43,12 @@ const ProjectNavigation = ({
 				duration: 0.25,
 				ease: 'easeInOut',
 			}}
-			className={`h-full flex flex-col gap-8 w-64 absolute bg-neutral-900 ml-0 ${
+			className={`h-full flex flex-col gap-8 w-64 absolute bg-[#D9D9D9]/70 ml-0 ${
 				isOpen ? 'left-64' : 'left-20'
-			} border-r border-neutral-800 p-5 z-10`}
+			} border-r bg-[#D9D9D9]/50 p-5 z-10`}
 		>
 			<div className="flex flex-row w-full justify-between place-items-center">
-				<h1 className="tracking-wide text-neutral-100 text-lg">
+				<h1 className="tracking-wide text-neutral-800 font-semibold text-lg">
 					{selectedProject}
 				</h1>
 				<button onClick={() => setSelectedProject(null)}>
