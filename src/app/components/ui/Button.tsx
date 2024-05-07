@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 
-function Button({ text }) {
+function Button({ text }: { text: string }) {
 	return (
 		<motion.button
 			initial={{ '--x': '100%', scale: 1 }}

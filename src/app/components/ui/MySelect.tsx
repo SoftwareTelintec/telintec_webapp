@@ -23,6 +23,31 @@ export default function MySelect({
 
 	useEffect(() => setIsMounted(true), []);
 
+	const customStyles = {
+		control: (base, state) => ({
+			...base,
+			background: '#D9D9D9',
+			borderRadius: 6,
+			borderColor: '#D9D9D9',
+			boxShadow: state.isFocused ? null : null,
+			'&:hover': {
+				borderColor: '#D9D9D9',
+			},
+		}),
+		menu: (base) => ({
+			...base,
+			// override border radius to match the box
+			borderRadius: 6,
+			// kill the gap
+			marginTop: 0,
+		}),
+		menuList: (base) => ({
+			...base,
+			// kill the white space on first and last option
+			padding: 0,
+		}),
+	};
+
 	return (
 		isMounted && (
 			<Select
@@ -35,6 +60,7 @@ export default function MySelect({
 				className="block p-1 w-full"
 				value={value}
 				onChange={onChange}
+				styles={customStyles}
 			/>
 		)
 	);

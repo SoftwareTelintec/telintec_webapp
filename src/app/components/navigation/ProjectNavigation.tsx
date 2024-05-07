@@ -87,40 +87,16 @@ const ProjectNavigation = ({
 				{selectedProject.toLowerCase() === 'almacen' && (
 					<>
 						<NavigationLink
-							name="Clientes"
-							href="/auth/dashboard/warehouse/clients"
-						>
-							<ArrowTrendingUpIcon className="stroke-[0.75] stroke-inherit min-w-8 w-8" />
-						</NavigationLink>
-						<NavigationLink
-							name="Entradas"
-							href="/auth/dashboard/warehouse/ins"
-						>
-							<UserGroupIcon className="stroke-[0.75] stroke-inherit min-w-8 w-8" />
-						</NavigationLink>
-						<NavigationLink
-							name="Salidas"
-							href="/auth/dashboard/warehouse/outs"
-						>
-							<PencilIcon className="stroke-[0.75] stroke-inherit min-w-8 w-8" />
-						</NavigationLink>
-						<NavigationLink
 							name="Inventario"
 							href="/auth/dashboard/warehouse/inventory"
 						>
 							<BoltIcon className="stroke-[0.75] stroke-inherit min-w-8 w-8" />
 						</NavigationLink>
 						<NavigationLink
-							name="Proveedores"
-							href="/auth/dashboard/warehouse/providers"
+							name="Movimientos"
+							href="/auth/dashboard/warehouse/movements"
 						>
 							<CursorArrowRaysIcon className="stroke-[0.75] stroke-inherit min-w-8 w-8" />
-						</NavigationLink>
-						<NavigationLink
-							name="Suministros"
-							href="/auth/dashboard/warehouse/supplies"
-						>
-							<AdjustmentsHorizontalIcon className="stroke-[0.75] stroke-inherit min-w-8 w-8" />
 						</NavigationLink>
 					</>
 				)}

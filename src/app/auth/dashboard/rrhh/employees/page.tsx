@@ -6,9 +6,9 @@ function EmployeesPage() {
 	return (
 		<>
 			<section className="flex flex-col p-10 ml-20 w-full gap-5 2xl:container 2xl:mx-auto">
-				<h1 className="text-4xl text-neutral-200 font-semibold tracking-wide">
+				<h2 className="text-4xl text-neutral-200 font-semibold tracking-wide">
 					Empleados
-				</h1>
+				</h2>
 				<div className="w-full h-auto border border-neutral-500/50 bg-neutral-800/20 rounded grid grid-cols-4 gap-4 px-4 py-6">
 					<TextInput label="Nombre" placeholder="Ingresa el nombre" />
 					<TextInput label="Apellido" placeholder="Ingresa el apellido" />
