@@ -208,12 +208,12 @@ function InventoryPage() {
 		const data = {
 			info: {
 				id: 0,
-				name: product.name,
-				sku: product.sku,
-				udm: product.udm,
-				stock: product.stock,
-				category_name: product.category_name.value,
-				supplier_name: product.supplier_name.value,
+				name: String(product.name),
+				sku: String(product.sku),
+				udm: String(product.udm),
+				stock: Number(product.stock),
+				category_name: String(product.category_name.value),
+				supplier_name: String(product.supplier_name.value),
 				is_tool: product.is_tool,
 				is_internal: product.is_internal,
 			},
@@ -234,13 +234,13 @@ function InventoryPage() {
 	const updateProduct = async () => {
 		const data = {
 			info: {
-				id: product.id,
-				name: product.name,
-				sku: product.sku,
-				udm: product.udm,
-				stock: product.stock,
-				category_name: product.category_name.value,
-				supplier_name: product.supplier_name.value,
+				id: Number(product.id),
+				name: String(product.name),
+				sku: String(product.sku),
+				udm: String(product.udm),
+				stock: Number(product.stock),
+				category_name: String(product.category_name.value),
+				supplier_name: String(product.supplier_name.value),
 				is_tool: product.is_tool,
 				is_internal: product.is_internal,
 			},
@@ -285,7 +285,7 @@ function InventoryPage() {
 
 	return (
 		<section className="flex flex-col p-10 ml-20 w-full gap-5 2xl:container 2xl:mx-auto">
-			<h1 className="text-4xl text-neutral-200">Inventario</h1>
+			<h2 className="text-4xl text-neutral-200">Inventario</h2>
 			<div className="w-full h-auto border border-neutral-500/50 bg-neutral-800/20 rounded grid grid-cols-2 gap-4 px-4 py-6">
 				<TextInput
 					label="ID Producto"
@@ -322,30 +322,28 @@ function InventoryPage() {
 					onChange={(e) => handleInputChange(e)}
 					defaultValue={product?.stock ? String(product.stock) : ''}
 				/>
-				<div className="w-full h-auto flex flex-col">
-					<label htmlFor="">Categoria</label>
-					<MySelect
-						placeholder="Selecciona una categoria"
-						options={categories?.data?.map((category) => ({
-							value: category.id,
-							label: category.name,
-						}))}
-						value={product?.category_name}
-						onChange={handleSelectedCategory}
-					/>
-				</div>
-				<div className="w-full h-auto flex flex-col">
-					<label htmlFor="">Proveedor</label>
-					<MySelect
-						placeholder="Selecciona un proveedor"
-						options={suppliers?.data?.map((supplier) => ({
-							value: supplier.id,
-							label: supplier.name,
-						}))}
-						value={product?.supplier_name || { label: '', value: '' }}
-						onChange={handleSelectedSupplier}
-					/>
-				</div>
+
+				<MySelect
+					label={'Categoria'}
+					placeholder="Selecciona una categoria"
+					options={categories?.data?.map((category) => ({
+						value: category.id,
+						label: category.name,
+					}))}
+					value={product?.category_name}
+					onChange={handleSelectedCategory}
+				/>
+
+				<MySelect
+					label={'Proveedor'}
+					placeholder="Selecciona un proveedor"
+					options={suppliers?.data?.map((supplier) => ({
+						value: supplier.id,
+						label: supplier.name,
+					}))}
+					value={product?.supplier_name || { label: '', value: '' }}
+					onChange={handleSelectedSupplier}
+				/>
 
 				<div className="grid grid-cols-2 gap-6 items-center justify-center mt-4">
 					<div className="flex gap-4">

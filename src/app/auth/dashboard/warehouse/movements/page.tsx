@@ -21,6 +21,7 @@ const columns = [
 		name: 'Tipo',
 		selector: (row: any) => row.type_m,
 		sortable: true,
+		width: '200px',
 	},
 	{
 		name: 'Cantidad',
@@ -31,6 +32,7 @@ const columns = [
 		name: 'Fecha',
 		selector: (row: any) => row.movement_date,
 		sortable: true,
+		width: '200px',
 	},
 	{
 		name: 'ID SM',
@@ -41,7 +43,7 @@ const columns = [
 	{
 		name: 'Cantidad anterior',
 		selector: (row: any) => row.previous_q,
-		width: '100px',
+		width: '200px',
 	},
 ];
 
@@ -222,7 +224,7 @@ function MovementsPage() {
 				<TextInput
 					label="Fecha de movimiento"
 					name="movement_date"
-					placeholder="Fecha de movimiento"
+					placeholder="Ejemplo: 2024-04-03"
 					onChange={(e) => handleInputChange(e)}
 					defaultValue={
 						movement?.movement_date ? String(movement.movement_date) : ''
