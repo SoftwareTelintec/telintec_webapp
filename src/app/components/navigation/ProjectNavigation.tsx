@@ -43,12 +43,12 @@ const ProjectNavigation = ({
 				duration: 0.25,
 				ease: 'easeInOut',
 			}}
-			className={`h-full flex flex-col gap-8 w-64 absolute bg-neutral-900 ml-0 ${
+			className={`h-full flex flex-col gap-8 w-64 absolute bg-[#D9D9D9]/70 ml-0 ${
 				isOpen ? 'left-64' : 'left-20'
-			} border-r border-neutral-800 p-5 z-10`}
+			} border-r bg-[#D9D9D9]/50 p-5 z-10`}
 		>
 			<div className="flex flex-row w-full justify-between place-items-center">
-				<h1 className="tracking-wide text-neutral-100 text-lg">
+				<h1 className="tracking-wide text-neutral-800 font-semibold text-lg">
 					{selectedProject}
 				</h1>
 				<button onClick={() => setSelectedProject(null)}>
@@ -87,40 +87,16 @@ const ProjectNavigation = ({
 				{selectedProject.toLowerCase() === 'almacen' && (
 					<>
 						<NavigationLink
-							name="Clientes"
-							href="/auth/dashboard/warehouse/clients"
-						>
-							<ArrowTrendingUpIcon className="stroke-[0.75] stroke-inherit min-w-8 w-8" />
-						</NavigationLink>
-						<NavigationLink
-							name="Entradas"
-							href="/auth/dashboard/warehouse/ins"
-						>
-							<UserGroupIcon className="stroke-[0.75] stroke-inherit min-w-8 w-8" />
-						</NavigationLink>
-						<NavigationLink
-							name="Salidas"
-							href="/auth/dashboard/warehouse/outs"
-						>
-							<PencilIcon className="stroke-[0.75] stroke-inherit min-w-8 w-8" />
-						</NavigationLink>
-						<NavigationLink
 							name="Inventario"
 							href="/auth/dashboard/warehouse/inventory"
 						>
 							<BoltIcon className="stroke-[0.75] stroke-inherit min-w-8 w-8" />
 						</NavigationLink>
 						<NavigationLink
-							name="Proveedores"
-							href="/auth/dashboard/warehouse/providers"
+							name="Movimientos"
+							href="/auth/dashboard/warehouse/movements"
 						>
 							<CursorArrowRaysIcon className="stroke-[0.75] stroke-inherit min-w-8 w-8" />
-						</NavigationLink>
-						<NavigationLink
-							name="Suministros"
-							href="/auth/dashboard/warehouse/supplies"
-						>
-							<AdjustmentsHorizontalIcon className="stroke-[0.75] stroke-inherit min-w-8 w-8" />
 						</NavigationLink>
 					</>
 				)}
