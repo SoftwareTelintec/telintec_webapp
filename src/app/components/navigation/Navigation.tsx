@@ -86,7 +86,6 @@ const Navigation = () => {
 
 	useEffect(() => {
 		validateRoles();
-		console.log(permissions);
 	}, [session]);
 
 	useEffect(() => {
@@ -113,12 +112,12 @@ const Navigation = () => {
 					initial="close"
 					className={`flex flex-col z-10 gap-20 p-5 absolute top-0 left-0 h-full shadow transition-colors duration-300 ${
 						isOpen
-							? 'bg-[#D9D9D9]/70  shadow-neutral-600'
-							: 'bg-[#D9D9D9]/50  shadow-[##5C5F65]/50'
+							? 'bg-[#D9D9D9]  shadow-neutral-600'
+							: 'bg-[#D9D9D9]/70 shadow-[##5C5F65]/50'
 					}`}
 				>
 					<div className="flex flex-row w-full justify-between place-items-center">
-						<div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-700 rounded-full" />
+						<div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-700 rounded-full"></div>
 						<button
 							className="p-1 rounded-full flex"
 							onClick={() => handleOpenClose()}

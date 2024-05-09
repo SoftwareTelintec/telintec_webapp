@@ -6,6 +6,7 @@ import { CalendarSelector, TextInput, MySelect } from '@/app/components';
 import { formatDate } from '@/utils';
 import debounce from 'lodash.debounce';
 import DataTable from 'react-data-table-component';
+import { useSession } from 'next-auth/react';
 
 const columns = [
 	{
@@ -89,6 +90,10 @@ const columns = [
 		sortable: true,
 		width: '400px',
 	},
+	{
+		name: 'Productos',
+		selector: (row: any) => row.items,
+	},
 ];
 
 const INITIAL_STATE = {
@@ -98,23 +103,69 @@ const INITIAL_STATE = {
 	contract: '',
 	facility: '',
 	location: '',
-	client_id: '',
+	client_id: { label: '', value: '' },
 	order_quotation: '',
-	emp_id: '',
+	emp_id: { name: '', id: 0 },
 	date: new Date(),
 	limit_date: new Date(),
-	status: '',
+	status: { label: '', value: '' },
 	history: '',
 	comments: '',
+	items: [],
 };
+
+const statusOptions = [
+	{ value: '0', label: 'En proceso' },
+	{ value: '1', label: 'Pendiente' },
+	{ value: '2', label: 'Completada' },
+	{ value: '3', label: 'Enviada' },
+];
+
+interface Product {
+	id: number;
+	name: string;
+	udm: string;
+	stock: number;
+}
 
 export default function MaterialRequest() {
 	const [showTable, setShowTable] = useState(false);
 	const [allSms, setAllSms] = useState([]);
 	const [sm, setSm] = useState(INITIAL_STATE);
 	const [loading, setLoading] = useState(true);
+	const [clients, setClients] = useState([]);
+	const [products, setProducts] = useState([]);
+	const [isClientsModalOpen, setIsClientsModalOpen] = useState(false);
+	const [isProductsModalOpen, setIsProductsModalOpen] = useState(false);
+	const [isProductAdded, setIsProductAdded] = useState(false);
+	const session = useSession();
 
-	const fetchAllSms = async () => {
+	const getAllProducts = async () => {
+		await axios('http://localhost:5000/GUI/api/v1/sm/products', {
+			method: 'POST',
+			data: {
+				limit: 1000,
+				page: 0,
+			},
+		})
+			.then((response) => {
+				const formattedProducts = response?.data?.data.map(
+					(product: Product) => ({
+						value: product.id,
+						label: `${product.name} - stock: ${product.stock}`,
+					})
+				);
+				const filterPerStock = formattedProducts.filter(
+					(product: any) => product.label.split(':')[1] > 0
+				);
+				setProducts(filterPerStock);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+	};
+
+	const getAllSms = async () => {
 		await axios('http://localhost:5000/GUI/api/v1/sm/all', {
 			method: 'POST',
 			data: {
@@ -130,6 +181,22 @@ export default function MaterialRequest() {
 				console.log(error);
 			});
 	};
+
+	const getAllClients = async () => {
+		await axios
+			.get('http://localhost:5000/GUI/api/v1/sm/clients')
+			.then((response) => {
+				setClients(response?.data);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+	};
+
+	const clientsOptions = clients?.data?.map((client) => ({
+		value: client[0],
+		label: client[1],
+	}));
 
 	const handleSelectedRow = (row: any) => {
 		console.log(row);
@@ -154,17 +221,54 @@ export default function MaterialRequest() {
 		debouncedHandleInputChange(name, value);
 	};
 
-	const handleSubmit = (e) => {
-		e.preventDefault();
+	const handleClientChange = (e: any) => {
+		setSm((prev): any => ({
+			...prev,
+			client_id: e,
+		}));
+	};
+
+	const handleStatusChange = (e: any) => {
+		setSm((prev): any => ({
+			...prev,
+			status: e,
+		}));
+	};
+
+	const handleSelectedProducts = (selectedOption: any) => {
+		setSm({ ...sm, items: selectedOption });
 	};
 
 	const clearFields = () => {
 		setSm(INITIAL_STATE);
 	};
 
+	const handleAddProductsToSm = () => {
+		setIsProductAdded(true);
+	};
+
+	const handleClearProducts = () => {
+		setIsProductAdded(false);
+		setSm({ ...sm, items: [] });
+	};
+
 	useEffect(() => {
-		fetchAllSms();
+		getAllProducts();
+		getAllSms();
+		getAllClients();
 	}, []);
+
+	useEffect(() => {
+		if (session.status === 'authenticated') {
+			setSm({
+				...sm,
+				emp_id: {
+					id: session?.data?.user?.name?.id,
+					name: session?.data?.user?.name?.name,
+				},
+			});
+		}
+	}, [session]);
 
 	return (
 		<section className="flex flex-col p-10 ml-20 w-full gap-5 2xl:container 2xl:mx-auto">
@@ -210,7 +314,14 @@ export default function MaterialRequest() {
 					name="client_id"
 					placeholder="Ingresa el cliente"
 					onChange={(e) => handleInputChange(e)}
-					defaultValue={sm?.client_id ? String(sm.client_id) : ''}
+					defaultValue={sm?.client_id.name ? String(sm.client_id.name) : ''}
+				/>
+				<MySelect
+					label="Cliente"
+					placeholder="Selecciona un cliente"
+					options={clientsOptions ? clientsOptions : []}
+					value={sm?.client_id ? sm.client_id : { label: '', value: '' }}
+					onChange={(e) => handleClientChange(e)}
 				/>
 				<TextInput
 					label="Número de orden"
@@ -224,14 +335,15 @@ export default function MaterialRequest() {
 					name="emp_id"
 					placeholder="Ingresa el personal"
 					onChange={(e) => handleInputChange(e)}
-					defaultValue={sm?.emp_id ? String(sm.emp_id) : ''}
+					disabled
+					defaultValue={sm?.emp_id.name ? String(sm.emp_id.name) : ''}
 				/>
-				<TextInput
-					label="Estado de la orden"
-					name="status"
-					placeholder="Ingresa el estado de la orden"
-					onChange={(e) => handleInputChange(e)}
-					defaultValue={sm?.status ? String(sm.status) : ''}
+				<MySelect
+					label="Estatus"
+					placeholder="Selecciona un estatus"
+					options={statusOptions}
+					value={sm?.status ? sm.status : { label: '', value: '' }}
+					onChange={(e) => handleStatusChange(e)}
 				/>
 				<TextInput
 					label="Historial"
@@ -247,6 +359,61 @@ export default function MaterialRequest() {
 					onChange={(e) => handleInputChange(e)}
 					defaultValue={sm?.comments ? String(sm.comments) : ''}
 				/>
+			</div>
+			<div className="flex flex-col gap-4">
+				<MySelect
+					label="Selector de productos"
+					placeholder="Selecciona un producto"
+					options={products ? products : []}
+					value={sm?.items}
+					isMulti
+					onChange={handleSelectedProducts}
+				/>
+				<div className="col-span-2 flex gap-6 mb-4">
+					<button
+						className="mt-6 border border-[#cccccc] rounded-md p-2 w-full hover:bg-slate-100 transition-all duration-100 ease-in"
+						onClick={handleAddProductsToSm}
+					>
+						Agregar Productos
+					</button>
+					<input
+						type="button"
+						className="mt-6 border border-[#cccccc] rounded-md p-2 w-full hover:bg-slate-100 transition-all duration-100 ease-in"
+						onClick={handleClearProducts}
+						value="Limpiar Productos"
+					/>
+				</div>
+				<div className="grid grid-cols-2 gap-4">
+					{isProductAdded &&
+						sm?.items.map((item: any) => (
+							<div
+								key={item.value}
+								className="flex gap-4 items-center justify-between border border-[#cccccc] bg-neutral-800/20 p-4 rounded-md w-full"
+							>
+								<TextInput
+									label="Nombre del Producto"
+									name="product_name"
+									disabled
+									placeholder="Nombre del producto"
+									defaultValue={String(item.label).split(' - ')[0]}
+								/>
+								<TextInput
+									label="Stock Actual"
+									name="current_stock"
+									disabled
+									placeholder="Cantidad actual en stock"
+									defaultValue={String(item.label).split(':')[1]}
+								/>
+								<TextInput
+									label="Cantidad a solicitar"
+									name="quantity"
+									placeholder="Ingresa la cantidad a pedir"
+									// onChange={(e) => handleInputChange(e)}
+									// defaultValue={sm?.comments ? String(sm.comments) : ''}
+								/>
+							</div>
+						))}
+				</div>
 			</div>
 			<div className="flex flex-col gap-5 w-full">
 				<div className="w-full flex gap-4 items-center justify-around px-4 py-6">
