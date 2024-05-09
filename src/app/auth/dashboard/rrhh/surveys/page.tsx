@@ -58,7 +58,7 @@ function SurverysPage() {
             onChange={(option) => handleEmployeeChange(option)}
             placeholder="Seleccione un empleado"
           />
-          <div className="flex flex-col justify-center items-center">
+          <div className="flex flex-col justify-center ">
             <button className="px-4 py-2 h-auto min-h-10 bg-indigo-400 rounded-md text-neutral-800 font-semibold">
               Crear Encuesta
             </button>
