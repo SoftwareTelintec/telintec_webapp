@@ -47,6 +47,7 @@ function CustomForm() {
 		<form
 			className="w-1/3 px-6 py-10 rounded-md bg-clip-padding bg-opacity-20 relative"
 			onSubmit={onSubmit}
+			autoComplete="on"
 		>
 			<h2 className="text-slate-200 font-bold text-4xl mb-4 text-center">
 				Iniciar Sesion
@@ -59,6 +60,7 @@ function CustomForm() {
 				Nombre de usuario:
 			</label>
 			<input
+				id="username"
 				type="text"
 				className="p-3 rounded-2xl block mb-2 bg-[#D9D9D9] text-neutral-600 w-full"
 				placeholder="Ingrese su nombre de usuario"
@@ -81,6 +83,7 @@ function CustomForm() {
 			</label>
 
 			<input
+				id="password"
 				type={showPassword ? 'text' : 'password'}
 				className="p-3 rounded-2xl mb-2 relative bg-[#D9D9D9] text-neutral-600 w-full"
 				placeholder="********"

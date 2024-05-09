@@ -1,4 +1,5 @@
 interface TextInputProps {
+	id?: string;
 	label: string;
 	name?: string;
 	defaultValue?: string;

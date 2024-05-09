@@ -275,6 +275,7 @@ export default function MaterialRequest() {
 			<h2 className="text-4xl text-neutral-200">Solicitud de Material</h2>
 			<div className="w-full h-auto border border-neutral-500/50 bg-neutral-800/20 rounded grid grid-cols-2 gap-4 px-4 py-6">
 				<TextInput
+					id="sm_code"
 					label="Codigo de SM"
 					name="sm_code"
 					placeholder="Ingresa el codigo de la SM"
@@ -282,6 +283,7 @@ export default function MaterialRequest() {
 					defaultValue={sm?.sm_code ? String(sm.sm_code) : ''}
 				/>
 				<TextInput
+					id="folio"
 					label="Folio"
 					name="folio"
 					placeholder="Ingresa el folio de la SM"
@@ -289,6 +291,7 @@ export default function MaterialRequest() {
 					defaultValue={sm?.folio ? String(sm.folio) : ''}
 				/>
 				<TextInput
+					id="contract"
 					label="Contrato"
 					name="contract"
 					placeholder="Ingresa el contrato de la SM"
@@ -296,6 +299,7 @@ export default function MaterialRequest() {
 					defaultValue={sm?.contract ? String(sm.contract) : ''}
 				/>
 				<TextInput
+					id="facility"
 					label="Planta"
 					name="facility"
 					placeholder="Ingresa la planta de la SM"
@@ -303,18 +307,12 @@ export default function MaterialRequest() {
 					defaultValue={sm?.facility ? String(sm.facility) : ''}
 				/>
 				<TextInput
+					id="location"
 					label="Ubicacion"
 					name="location"
 					placeholder="Ingresa la Ubicacion de la SM"
 					onChange={(e) => handleInputChange(e)}
 					defaultValue={sm?.location ? String(sm.location) : ''}
-				/>
-				<TextInput
-					label="Cliente"
-					name="client_id"
-					placeholder="Ingresa el cliente"
-					onChange={(e) => handleInputChange(e)}
-					defaultValue={sm?.client_id.name ? String(sm.client_id.name) : ''}
 				/>
 				<MySelect
 					label="Cliente"
@@ -324,6 +322,7 @@ export default function MaterialRequest() {
 					onChange={(e) => handleClientChange(e)}
 				/>
 				<TextInput
+					id="order_quotation"
 					label="Número de orden"
 					name="order_quotation"
 					placeholder="Ingresa el número de orden"
@@ -331,6 +330,7 @@ export default function MaterialRequest() {
 					defaultValue={sm?.order_quotation ? String(sm.order_quotation) : ''}
 				/>
 				<TextInput
+					id="emp_id"
 					label="Personal"
 					name="emp_id"
 					placeholder="Ingresa el personal"
@@ -346,6 +346,7 @@ export default function MaterialRequest() {
 					onChange={(e) => handleStatusChange(e)}
 				/>
 				<TextInput
+					id="history"
 					label="Historial"
 					name="history"
 					placeholder="Ingresa el historial"
@@ -353,6 +354,7 @@ export default function MaterialRequest() {
 					defaultValue={sm?.history ? String(sm.history) : ''}
 				/>
 				<TextInput
+					id="comments"
 					label="Comentarios"
 					name="comments"
 					placeholder="Ingresa los comentarios"
@@ -391,6 +393,7 @@ export default function MaterialRequest() {
 								className="flex gap-4 items-center justify-between border border-[#cccccc] bg-neutral-800/20 p-4 rounded-md w-full"
 							>
 								<TextInput
+									id="product_name"
 									label="Nombre del Producto"
 									name="product_name"
 									disabled
@@ -398,6 +401,7 @@ export default function MaterialRequest() {
 									defaultValue={String(item.label).split(' - ')[0]}
 								/>
 								<TextInput
+									id="current_stock"
 									label="Stock Actual"
 									name="current_stock"
 									disabled
@@ -405,6 +409,7 @@ export default function MaterialRequest() {
 									defaultValue={String(item.label).split(':')[1]}
 								/>
 								<TextInput
+									id="quantity"
 									label="Cantidad a solicitar"
 									name="quantity"
 									placeholder="Ingresa la cantidad a pedir"
