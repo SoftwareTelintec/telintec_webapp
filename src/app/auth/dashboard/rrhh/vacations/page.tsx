@@ -72,7 +72,7 @@ function VacationsPage() {
 
 	const getAllVacations = async () => {
 		await axios
-			.get('http://localhost:5000/GUI/api/v1/rrhh/vacations/all')
+			.get('http://localhost:5000/GUI/api/v1/rrhh/employees/vacations/all')
 			.then((res) => {
 				setVacations(res.data);
 			})

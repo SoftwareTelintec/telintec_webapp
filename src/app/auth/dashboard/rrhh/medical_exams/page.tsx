@@ -41,7 +41,6 @@ const columns = [
 ];
 
 interface ExaMedical {
-	//exist: boolean;
 	id_exam: number;
 	name: string;
 	blood: string;
@@ -54,23 +53,25 @@ interface Option {
 	value: string;
 	label: string;
 }
-// Dummy data
+
 const bloodTypeOptions = [
 	{ value: 'A+', label: 'A+' },
 	{ value: 'B+', label: 'B+' },
 	{ value: 'O+', label: 'O+' },
 	{ value: 'AB+', label: 'AB+' },
 ];
+
 const stateOptions = [
 	{ value: 'activo', label: 'Activo' },
 	{ value: 'inactivo', label: 'Inactivo' },
 ];
+
 const aptitudeOptions = [
 	{ value: '1', label: '1' },
 	{ value: '2', label: '2' },
 ];
+
 const INITIAL_EXAMEDICAL: ExaMedical = {
-	//exist: true,
 	id_exam: 0,
 	name: '',
 	blood: '',
@@ -79,6 +80,7 @@ const INITIAL_EXAMEDICAL: ExaMedical = {
 	dates: '',
 	emp_id: 0,
 };
+
 function MedicalPage() {
 	const [examedicals, setExaMedicals] = useState<ExaMedical[]>();
 	const [examedical, setExaMedical] = useState<ExaMedical>(INITIAL_EXAMEDICAL);
@@ -86,27 +88,24 @@ function MedicalPage() {
 	const [showTable, setShowTable] = useState(false);
 	const [loading, setLoading] = useState(false);
 
-	// Estado para cada selección
 	const [selectedBloodType, setSelectedBloodType] = useState(
 		bloodTypeOptions[0]
 	);
 	const [selectedState, setSelectedState] = useState(stateOptions[0]);
 	const [selectedAptitude, setSelectedAptitude] = useState(aptitudeOptions[0]);
-	// Funciones onChange
+
 	function handleBloodTypeChange(option: Option) {
-		console.log('Selected Blood Type:', option);
 		setSelectedBloodType(option);
 	}
 
 	function handleStateChange(option: Option) {
-		console.log('Selected State:', option);
 		setSelectedState(option);
 	}
 
 	function handleAptitudeChange(option: Option) {
-		console.log('Selected Aptitude:', option);
 		setSelectedAptitude(option);
 	}
+
 	function handleSelectChange(
 		option: Option | null,
 		actionMeta: ActionMeta<Option>
@@ -119,10 +118,9 @@ function MedicalPage() {
 		}
 	}
 
-	//
 	const getAllExaMedical = async () => {
 		await axios
-			.get('http://localhost:5000/GUI/api/v1/rrhh/employees/em')
+			.get('http://localhost:5000/GUI/api/v1/rrhh/employees/medical/all')
 			.then((res) => {
 				setExaMedicals(res.data);
 			})
@@ -130,6 +128,7 @@ function MedicalPage() {
 				setError(err);
 			});
 	};
+
 	const hadleShowTable = () => {
 		setShowTable(!showTable);
 	};
