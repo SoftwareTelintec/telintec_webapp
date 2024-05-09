@@ -12,8 +12,8 @@ export const login = async (data: loginData) => {
 	const { username, password } = data;
 	try {
 		const res = await signIn('credentials', {
-			username,
-			password,
+			username: username,
+			password: password,
 			redirectTo: '/auth/dashboard',
 		});
 		return res;

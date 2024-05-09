@@ -1,20 +1,21 @@
 'use client';
 
 import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
+import { redirect } from 'next/navigation';
 import { login } from '@/actions/login';
 import Button from '@/app/components/ui/Button';
 import { useEffect, useState } from 'react';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
-import { useSession } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 
 function CustomForm() {
 	const [showPassword, setShowPassword] = useState(false);
+	const [error, setError] = useState<string | null>(null);
 	const session = useSession();
 
 	useEffect(() => {
 		if (session?.status === 'authenticated') {
-			router.push('/auth/dashboard');
+			redirect('/auth/dashboard');
 		}
 	}, [session]);
 
@@ -23,17 +24,25 @@ function CustomForm() {
 		register,
 		formState: { errors },
 	} = useForm();
-	const router = useRouter();
 
 	const onSubmit = handleSubmit(async (data: any) => {
-		const res = await login(data);
-		if (res?.error) {
-			alert(`Error: ${res.error}`);
-		} else {
-			router.push('/auth/dashboard');
-			router.refresh();
-		}
+		await signIn('credentials', {
+			username: data.username,
+			password: data.password,
+			redirect: false,
+		})
+			.then((res) => {
+				if (res?.error) {
+					setError('Creedenciales incorrectas');
+				} else {
+					redirect('/auth/dashboard');
+				}
+			})
+			.catch((error) => {
+				console.log('Error', error);
+			});
 	});
+
 	return (
 		<form
 			className="w-1/3 px-6 py-10 rounded-md bg-clip-padding bg-opacity-20 relative"
@@ -97,6 +106,7 @@ function CustomForm() {
 			{errors.password && (
 				<p className="text-red-500 text-sm">{`${errors?.password?.message}`}</p>
 			)}
+			{error && <p className="text-red-500 text-sm">{error}</p>}
 
 			<div className="w-full flex items-center justify-center mt-4">
 				<Button text={'Iniciar Sesion'} />
