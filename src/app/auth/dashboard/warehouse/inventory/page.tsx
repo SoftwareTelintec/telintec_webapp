@@ -108,6 +108,7 @@ function InventoryPage() {
 	const [error, setError] = useState('');
 	const [showTable, setShowTable] = useState(false);
 	const [loading, setLoading] = useState(false);
+	const [res, setRes] = useState<any>();
 
 	const getAllCategories = async () => {
 		await axios
@@ -224,7 +225,7 @@ function InventoryPage() {
 			data,
 		})
 			.then((res) => {
-				console.log(res.data);
+				setRes(res.data);
 			})
 			.catch((err) => {
 				setError(err);
@@ -251,7 +252,7 @@ function InventoryPage() {
 			data,
 		})
 			.then((res) => {
-				console.log(res.data);
+				setRes(res.data);
 			})
 			.catch((err) => {
 				setError(err);
@@ -267,7 +268,7 @@ function InventoryPage() {
 			data,
 		})
 			.then((res) => {
-				console.log(res.data);
+				setRes(res.data);
 			})
 			.catch((err) => {
 				setError(err);
@@ -393,19 +394,19 @@ function InventoryPage() {
 						className="px-4 py-2 bg-cyan-700 rounded-md text-neutral-800 font-semibold tracking-wider"
 						onClick={postNewProduct}
 					>
-						Agregar Entrada
+						Agregar Producto
 					</button>
 					<button
 						className="px-4 py-2 bg-cyan-700 rounded-md text-neutral-800 font-semibold tracking-wider"
 						onClick={updateProduct}
 					>
-						Actualizar Entrada
+						Actualizar Producto
 					</button>
 					<button
 						className="px-4 py-2 bg-[#cecece] rounded-md text-red-500 border border-red-500 font-semibold tracking-wider"
 						onClick={deleteProduct}
 					>
-						Eliminar Entrada
+						Eliminar Producto
 					</button>
 					<button
 						className="px-4 py-2 bg-cyan-700 rounded-md text-neutral-800 font-semibold tracking-wider"

@@ -1,11 +1,11 @@
 import {
-	AdjustmentsHorizontalIcon,
+	ArchiveBoxIcon,
 	ArrowTrendingUpIcon,
 	BoltIcon,
-	CursorArrowRaysIcon,
+	DocumentArrowUpIcon,
+	DocumentChartBarIcon,
 	PencilIcon,
 	UserGroupIcon,
-	UserIcon,
 	XMarkIcon,
 } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
@@ -90,13 +90,19 @@ const ProjectNavigation = ({
 							name="Inventario"
 							href="/auth/dashboard/warehouse/inventory"
 						>
-							<BoltIcon className="stroke-[0.75] stroke-inherit min-w-8 w-8" />
+							<ArchiveBoxIcon className="stroke-[0.75] stroke-inherit min-w-8 w-8" />
+						</NavigationLink>
+						<NavigationLink
+							name="Procesado de SM"
+							href="/auth/dashboard/warehouse/sm_processing"
+						>
+							<DocumentChartBarIcon className="stroke-[0.75] stroke-inherit min-w-8 w-8" />
 						</NavigationLink>
 						<NavigationLink
 							name="Movimientos"
 							href="/auth/dashboard/warehouse/movements"
 						>
-							<CursorArrowRaysIcon className="stroke-[0.75] stroke-inherit min-w-8 w-8" />
+							<DocumentArrowUpIcon className="stroke-[0.75] stroke-inherit min-w-8 w-8" />
 						</NavigationLink>
 					</>
 				)}

@@ -112,6 +112,7 @@ const INITIAL_STATE = {
 	history: '',
 	comments: '',
 	items: [],
+	itemsStock: [],
 };
 
 const statusOptions = [
@@ -138,7 +139,86 @@ export default function MaterialRequest() {
 	const [isClientsModalOpen, setIsClientsModalOpen] = useState(false);
 	const [isProductsModalOpen, setIsProductsModalOpen] = useState(false);
 	const [isProductAdded, setIsProductAdded] = useState(false);
+	const [error, setError] = useState(false);
+	const [res, setRes] = useState('');
 	const session = useSession();
+
+	const postNewSm = async () => {
+		const data = {
+			info: {
+				id: sm.id,
+				sm_code: sm.sm_code,
+				folio: sm.folio,
+				contract: sm.contract,
+				facility: sm.facility,
+				location: sm.location,
+				client_id: sm.client_id.value,
+				order_quotation: sm.order_quotation,
+				emp_id: sm.emp_id.id,
+				date: formatDate(sm.date),
+				limit_date: formatDate(sm.limit_date),
+				status: sm.status.value,
+				history: sm.history,
+				comment: sm.comments,
+			},
+			items: sm.itemsStock,
+		};
+		await axios('http://localhost:5000/GUI/api/v1/sm/add', {
+			method: 'POST',
+			data: data,
+		})
+			.then((response) => {
+				setRes(response.data);
+			})
+			.catch((error) => {
+				setError(error);
+			});
+	};
+
+	const deleteSm = async () => {
+		await axios('http://localhost:5000/GUI/api/v1/sm/add', {
+			method: 'DELETE',
+			data: { id: sm.id, sm_code: sm.sm_code },
+		})
+			.then((response) => {
+				setRes(response.data);
+			})
+			.catch((error) => {
+				setError(error);
+			});
+	};
+
+	const putNewSm = async () => {
+		const data = {
+			info: {
+				id: sm.id,
+				sm_code: sm.sm_code,
+				folio: sm.folio,
+				contract: sm.contract,
+				facility: sm.facility,
+				location: sm.location,
+				client_id: sm.client_id.value,
+				order_quotation: sm.order_quotation,
+				emp_id: sm.emp_id.id,
+				date: sm.date,
+				limit_date: sm.limit_date,
+				status: sm.status.value,
+				history: sm.history,
+				comment: sm.comments,
+			},
+			items: sm.itemsStock || [],
+		};
+		await axios('http://localhost:5000/GUI/api/v1/sm/add', {
+			method: 'PUT',
+			data: data,
+		})
+			.then((response) => {
+				setRes(response.data);
+			})
+			.catch((error) => {
+				setError(error);
+			});
+	};
 
 	const getAllProducts = async () => {
 		await axios('http://localhost:5000/GUI/api/v1/sm/products', {
@@ -161,7 +241,7 @@ export default function MaterialRequest() {
 				setProducts(filterPerStock);
 			})
 			.catch((error) => {
-				console.log(error);
+				setError(error);
 			});
 	};
 
@@ -178,7 +258,7 @@ export default function MaterialRequest() {
 				setLoading(false);
 			})
 			.catch((error) => {
-				console.log(error);
+				setError(error);
 			});
 	};
 
@@ -189,7 +269,7 @@ export default function MaterialRequest() {
 				setClients(response?.data);
 			})
 			.catch((error) => {
-				console.log(error);
+				setError(error);
 			});
 	};
 
@@ -199,7 +279,39 @@ export default function MaterialRequest() {
 	}));
 
 	const handleSelectedRow = (row: any) => {
-		console.log(row);
+		const {
+			id,
+			sm_code,
+			folio,
+			contract,
+			facility,
+			location,
+			client_id,
+			order_quotation,
+			emp_id,
+			date,
+			limit_date,
+			status,
+			history,
+			comment,
+		} = row;
+		setSm(INITIAL_STATE);
+		setSm({
+			id,
+			sm_code,
+			folio,
+			contract,
+			facility,
+			location,
+			client_id: { label: client_id, value: client_id },
+			order_quotation,
+			emp_id: { name: emp_id, id: emp_id },
+			date,
+			limit_date,
+			status: { label: status, value: status },
+			history,
+			comments: comment,
+		});
 	};
 
 	const hadleShowTable = () => {
@@ -250,6 +362,33 @@ export default function MaterialRequest() {
 	const handleClearProducts = () => {
 		setIsProductAdded(false);
 		setSm({ ...sm, items: [] });
+	};
+
+	const debouncedHandleStockhange = useCallback(
+		debounce((value, label, id, exists) => {
+			if (!exists) {
+				setSm((prev): any => ({
+					...prev,
+					itemsStock: [
+						...prev?.itemsStock,
+						{ comment: label, quantity: value, id },
+					],
+				}));
+			}
+			setSm((prev): any => ({
+				...prev,
+				itemsStock: prev.itemsStock.map((item: any) =>
+					item.id === id ? { ...item, quantity: value } : item
+				),
+			}));
+		}, 500),
+		[]
+	);
+
+	const handleStockChange = (e: any, label, id) => {
+		const { value } = e.target;
+		const exists = sm.itemsStock.some((item: any) => item.id === id);
+		debouncedHandleStockhange(value, label, id, exists);
 	};
 
 	useEffect(() => {
@@ -389,32 +528,33 @@ export default function MaterialRequest() {
 					{isProductAdded &&
 						sm?.items.map((item: any) => (
 							<div
-								key={item.value}
+								key={`${item.value} - ${item.label}`}
 								className="flex gap-4 items-center justify-between border border-[#cccccc] bg-neutral-800/20 p-4 rounded-md w-full"
 							>
 								<TextInput
-									id="product_name"
+									id={`${item.label}`}
 									label="Nombre del Producto"
-									name="product_name"
+									name={`${item.label}`}
 									disabled
 									placeholder="Nombre del producto"
 									defaultValue={String(item.label).split(' - ')[0]}
 								/>
 								<TextInput
-									id="current_stock"
+									id={`current_stock_${item.label}`}
 									label="Stock Actual"
-									name="current_stock"
+									name={`current_stock_${item.label}`}
 									disabled
 									placeholder="Cantidad actual en stock"
 									defaultValue={String(item.label).split(':')[1]}
 								/>
 								<TextInput
-									id="quantity"
+									id={`quantity_${item.label}`}
 									label="Cantidad a solicitar"
-									name="quantity"
+									name={`quantity_${item.label}`}
 									placeholder="Ingresa la cantidad a pedir"
-									// onChange={(e) => handleInputChange(e)}
-									// defaultValue={sm?.comments ? String(sm.comments) : ''}
+									onChange={(e, label, id) =>
+										handleStockChange(e, item.label, item.value)
+									}
 								/>
 							</div>
 						))}
@@ -428,13 +568,22 @@ export default function MaterialRequest() {
 					>
 						Limpiar Campos
 					</button>
-					<button className="px-4 py-2 bg-cyan-700 rounded-md text-neutral-800 font-semibold tracking-wider">
+					<button
+						className="px-4 py-2 bg-cyan-700 rounded-md text-neutral-800 font-semibold tracking-wider"
+						onClick={postNewSm}
+					>
 						Agregar Solicitud
 					</button>
-					<button className="px-4 py-2 bg-cyan-700 rounded-md text-neutral-800 font-semibold tracking-wider">
+					<button
+						className="px-4 py-2 bg-cyan-700 rounded-md text-neutral-800 font-semibold tracking-wider"
+						onClick={putNewSm}
+					>
 						Actualizar Solicitud
 					</button>
-					<button className="px-4 py-2 bg-[#cecece] rounded-md text-red-500 border border-red-500 font-semibold tracking-wider">
+					<button
+						className="px-4 py-2 bg-[#cecece] rounded-md text-red-500 border border-red-500 font-semibold tracking-wider"
+						onClick={deleteSm}
+					>
 						Eliminar Solicitud
 					</button>
 					<button
