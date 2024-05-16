@@ -10,6 +10,7 @@ import {
 	DocumentCheckIcon,
 	Square2StackIcon,
 	ArrowLeftStartOnRectangleIcon,
+	UserGroupIcon,
 } from '@heroicons/react/24/outline';
 import ProjectLink from './ProjectLink';
 import ProjectNavigation from './ProjectNavigation';
@@ -306,7 +307,7 @@ const Navigation = () => {
 							setSelectedProject={setSelectedProject}
 							isOpen={!isOpen}
 						>
-							<div className="min-w-4 mx-2 border-indigo-600 border rounded-full aspect-square bg-indigo-700" />
+							<UserGroupIcon className="stroke-inherit stroke-[0.75] min-w-8 w-8" />
 						</ProjectLink>
 					)}
 				</div>
