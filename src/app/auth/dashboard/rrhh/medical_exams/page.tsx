@@ -272,12 +272,6 @@ function MedicalPage() {
 				<div className="w-full h-80 border border-neutral-500/50 bg-neutral-800/20 rounded grid grid-cols-3 gap-4 px-4 py-6">
 					<CalendarSelector label="fecha" />
 					<TextInput label="ID Empleado" />
-					<div className="flex flex-col justify-end">
-						<button className="px-4 py-2  bg-indigo-400 rounded-md text-neutral-800 font-semibold ">
-							Buscar Id
-						</button>
-					</div>
-
 					<TextInput
 						name="phone"
 						id="phone"
@@ -324,55 +318,49 @@ function MedicalPage() {
 							examedical?.apt_actual ? String(examedical.apt_actual) : ''
 						}
 					/>
-
 					<MySelect
 						label="Aptitud"
 						options={aptitudeOptions}
 						value={selectedAptitude}
 						placeholder="Selecciona una aptitud"
-						// onChange={(e) => {
-						// 	setSelectedAptitude(e);
-						// 	handleInputChange(e);
-						// }}
 					/>
 				</div>
 
 				<div className="flex flex-row gap-5 w-full">
-					<div className="flex flex-row gap-5 w-full">
-						<div className="w-full flex gap-4 items-center justify-around px-4 py-6">
-							<button
-								className="px-4 py-2 bg-indigo-400rounded-md text-neutral-800 font-semibold tracking-wider"
-								onClick={cleanFields}
-							>
-								Limpiar Campos
-							</button>
-							<button
-								className="px-4 py-2 bg-indigo-400 rounded-md text-neutral-800 font-semibold tracking-wider"
-								onClick={postNewExaMedical}
-							>
-								Agregar Examen
-							</button>
-							<button
-								className="px-4 py-2 bg-indigo-400 rounded-md text-neutral-800 font-semibold tracking-wider"
-								onClick={updateExaMedical}
-							>
-								Actualizar Examen
-							</button>
-							<button
-								className="px-4 py-2 bg-[#cecece] rounded-md text-red-500 border border-red-500 font-semibold tracking-wider"
-								onClick={deleteExaMedical}
-							>
-								Eliminar Examen
-							</button>
-							<button
-								className="px-4 py-2 bg-indigo-400 rounded-md text-neutral-800 font-semibold tracking-wider"
-								onClick={hadleShowTable}
-							>
-								Ver Tabla
-							</button>
-						</div>
+					<div className="w-full flex gap-4 items-center justify-around px-4 py-6">
+						<button
+							className="px-4 py-2 bg-indigo-400 rounded-md text-neutral-800 font-semibold tracking-wider"
+							onClick={cleanFields}
+						>
+							Limpiar Campos
+						</button>
+						<button
+							className="px-4 py-2 bg-indigo-400 rounded-md text-neutral-800 font-semibold tracking-wider"
+							onClick={postNewExaMedical}
+						>
+							Agregar Examen
+						</button>
+						<button
+							className="px-4 py-2 bg-indigo-400 rounded-md text-neutral-800 font-semibold tracking-wider"
+							onClick={updateExaMedical}
+						>
+							Actualizar Examen
+						</button>
+						<button
+							className="px-4 py-2 bg-[#cecece] rounded-md text-red-500 border border-red-500 font-semibold tracking-wider"
+							onClick={deleteExaMedical}
+						>
+							Eliminar Examen
+						</button>
+						<button
+							className="px-4 py-2 bg-indigo-400 rounded-md text-neutral-800 font-semibold tracking-wider"
+							onClick={hadleShowTable}
+						>
+							Ver Tabla
+						</button>
 					</div>
 				</div>
+
 				{showTable && (
 					<DataTable
 						columns={columns}

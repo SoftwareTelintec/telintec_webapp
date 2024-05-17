@@ -83,16 +83,18 @@ const columns = [
 		name: 'Historial',
 		selector: (row: any) => row.history,
 		sortable: true,
+		width: '300px',
 	},
 	{
 		name: 'Comentarios',
 		selector: (row: any) => row.comments,
 		sortable: true,
-		width: '400px',
+		width: '300px',
 	},
 	{
 		name: 'Productos',
 		selector: (row: any) => row.items,
+		width: '300px',
 	},
 ];
 
@@ -246,20 +248,27 @@ export default function MaterialRequest() {
 	};
 
 	const getAllSms = async () => {
-		await axios('http://localhost:5000/GUI/api/v1/sm/all', {
-			method: 'POST',
-			data: {
-				limit: 100,
-				page: 0,
-			},
-		})
-			.then((response) => {
-				setAllSms(response.data);
-				setLoading(false);
-			})
-			.catch((error) => {
-				setError(error);
+		try {
+			const response = await axios('http://localhost:5000/GUI/api/v1/sm/all', {
+				method: 'POST',
+				data: {
+					limit: 100,
+					page: 0,
+				},
 			});
+
+			const transformedData = response.data.data.map((sm: any) => ({
+				...sm,
+				history: JSON.stringify(sm.history),
+				items: JSON.stringify(sm.items),
+			}));
+			setAllSms(transformedData);
+			setLoading(false);
+		} catch (error) {
+			console.error('Error fetching SMS data:', error);
+			setError(error);
+			setLoading(false); // Ensure loading state is updated even if there's an error
+		}
 	};
 
 	const getAllClients = async () => {
@@ -596,7 +605,7 @@ export default function MaterialRequest() {
 				{showTable && (
 					<DataTable
 						columns={columns}
-						data={allSms?.data}
+						data={allSms}
 						onRowDoubleClicked={(row) => handleSelectedRow(row)}
 						pagination
 						paginationPerPage={10}

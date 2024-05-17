@@ -5,8 +5,6 @@ import axios from 'axios';
 import { comment } from 'postcss';
 import React, { use, useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
-import { set } from 'react-hook-form';
-import { json } from 'stream/consumers';
 
 const columns = [
 	{
@@ -104,29 +102,39 @@ export default function SmProcessingPage() {
 	const [currentSm, setCurrentSm] = useState({ items: [], history: [] });
 
 	const getAllSms = async () => {
-		await axios('http://localhost:5000/GUI/api/v1/sm/all', {
-			method: 'POST',
-			data: {
-				limit: 100,
-				page: 0,
-			},
-		})
-			.then((response) => {
-				setAllSms(response.data);
-				setLoading(false);
-			})
-			.catch((error) => {
-				console.log(error);
+		try {
+			const response = await axios('http://localhost:5000/GUI/api/v1/sm/all', {
+				method: 'POST',
+				data: {
+					limit: 100,
+					page: 0,
+				},
 			});
+
+			const transformedData = response.data.data.map((sm: any) => ({
+				...sm,
+				history: JSON.stringify(sm.history),
+				items: JSON.stringify(sm.items),
+			}));
+			setAllSms(transformedData);
+			setLoading(false);
+		} catch (error) {
+			console.error('Error fetching SMS data:', error);
+			setLoading(false); // Ensure loading state is updated even if there's an error
+		}
 	};
 
 	const handleSmProcess = (row: any) => {
-		const data = row.history;
-		const trimmedStringData = data.replace(/^['"]|['"]$/g, '');
-		const jsonData = JSON.parse(trimmedStringData);
+		const history = row.history;
+		const items = row.items;
+		const trimmedStringData1 = history.replace(/^['"]|['"]$/g, '');
+		const trimmedStringData2 = items.replace(/^['"]|['"]$/g, '');
+		const historyData = JSON.parse(trimmedStringData1);
+		const itemsData = JSON.parse(trimmedStringData2);
 		setCurrentSm((prev) => ({
 			...prev,
-			history: jsonData,
+			history: JSON.stringify(historyData),
+			items: JSON.stringify(itemsData),
 		}));
 	};
 
@@ -146,6 +154,7 @@ export default function SmProcessingPage() {
 						<textarea
 							name="products_sm"
 							id="products_sm"
+							defaultValue={currentSm ? currentSm.items : ''}
 							className="min-h-40 rounded-md p-1"
 						/>
 					</div>
@@ -160,9 +169,10 @@ export default function SmProcessingPage() {
 					</div>
 				</div>
 				<div>
+					<p className="mb-2">SM</p>
 					<DataTable
 						columns={columns}
-						data={allSms?.data}
+						data={allSms}
 						onRowDoubleClicked={(row) => handleSmProcess(row)}
 						pagination
 						paginationPerPage={10}
