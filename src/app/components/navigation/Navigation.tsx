@@ -15,6 +15,7 @@ import {
 import ProjectLink from './ProjectLink';
 import ProjectNavigation from './ProjectNavigation';
 import { pagesPerRole } from '@/constants';
+import Image from 'next/image';
 
 const containerVariants = {
 	close: {
@@ -109,130 +110,24 @@ const Navigation = () => {
 
 	return (
 		<>
-			{/* {hasPermission && (
-				<motion.nav
-					variants={containerVariants}
-					animate={containerControls}
-					initial="close"
-					className={`flex flex-col z-10 gap-20 p-5 absolute top-0 left-0 h-full shadow transition-colors duration-300 ${
-						isOpen
-							? 'bg-[#D9D9D9]  shadow-neutral-600'
-							: 'bg-[#D9D9D9]/70 shadow-[##5C5F65]/50'
-					}`}
-				>
-					<div className="flex flex-row w-full justify-between place-items-center">
-						<div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-700 rounded-full"></div>
-						<button
-							className="p-1 rounded-full flex"
-							onClick={() => handleOpenClose()}
-						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 24 24"
-								strokeWidth={2}
-								stroke="currentColor"
-								className="w-8 h-8 stroke-neutral-900"
-							>
-								<motion.path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									variants={svgVariants}
-									animate={svgControls}
-									d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
-									transition={{
-										duration: 0.5,
-										ease: 'easeInOut',
-									}}
-								/>
-							</svg>
-						</button>
-					</div>
-					<div className="flex flex-col gap-3">
-						{isOpen && (
-							<span className="uppercase text-xs text-neutral-600">main</span>
-						)}
-						{permissions.includes('/auth/dashboard') && (
-							<NavigationLink
-								name="Dashboard"
-								href={'/auth/dashboard'}
-								isOpen={!isOpen}
-							>
-								<ChartBarIcon className="stroke-inherit stroke-[0.75] min-w-8 w-8" />
-							</NavigationLink>
-						)}
-						{permissions.includes('/auth/dashboard/sm') && (
-							<NavigationLink
-								name="Solicitud de Material"
-								href={'/auth/dashboard/sm'}
-								isOpen={!isOpen}
-							>
-								<Square2StackIcon className="stroke-inherit stroke-[0.75] min-w-8 w-8" />
-							</NavigationLink>
-						)}
-						{permissions.includes('/auth/dashboard/logs') && (
-							<NavigationLink
-								name="Bitacora"
-								href={'/auth/dashboard/logs'}
-								isOpen={!isOpen}
-							>
-								<DocumentCheckIcon className="stroke-inherit stroke-[0.75] min-w-8 w-8" />
-							</NavigationLink>
-						)}
-					</div>
-					<div className="flex flex-col gap-3">
-						{permissions.includes('/auth/dashboard/warehouse') && (
-							<ProjectLink
-								name="Almacen"
-								setSelectedProject={setSelectedProject}
-								isOpen={!isOpen}
-							>
-								<ArchiveBoxIcon className="stroke-inherit stroke-[0.75] min-w-8 w-8" />
-							</ProjectLink>
-						)}
-						{permissions.includes('/auth/dashboard/rrhh') && (
-							<ProjectLink
-								name="RRHH"
-								setSelectedProject={setSelectedProject}
-								isOpen={!isOpen}
-							>
-								<div className="min-w-4 mx-2 border-indigo-600 border rounded-full aspect-square bg-indigo-700" />
-							</ProjectLink>
-						)}
-					</div>
-					{isOpen && (
-						<span className="uppercase text-xs text-neutral-600">settings</span>
-					)}
-					{isOpen ? (
-						<button
-							className="w-full flex flex-row gap-2 items-center justify-center  px-2 py-1 rounded-md hover:scale-[1.05] transition-colors duration-300 text-sm bg-[#050B21] text-neutral-200 shadow-[#050B21]"
-							onClick={() => signOut()}
-						>
-							<span>Salir</span>
-							<ArrowLeftStartOnRectangleIcon className="min-w-8 w-8" />
-						</button>
-					) : (
-						<button
-							className="w-full flex flex-row gap-2 items-center justify-center  px-2 py-1 rounded-md hover:scale-[1.05] transition-colors duration-300 text-sm bg-[#050B21] text-neutral-200 shadow-[#050B21]"
-							onClick={() => signOut()}
-						>
-							<ArrowLeftStartOnRectangleIcon className="min-w-8 w-8" />
-						</button>
-					)}
-				</motion.nav>
-			)} */}
 			<motion.nav
 				variants={containerVariants}
 				animate={containerControls}
 				initial="close"
-				className={`flex flex-col z-10 gap-20 p-5 absolute top-0 left-0 h-full shadow transition-colors duration-300 ${
+				className={`flex flex-col z-10 gap-12 p-5 absolute top-0 left-0 h-full shadow transition-colors duration-300 ${
 					isOpen
 						? 'bg-[#D9D9D9]  shadow-neutral-600'
 						: 'bg-[#D9D9D9]/70 shadow-[##5C5F65]/50'
 				}`}
 			>
-				<div className="flex flex-row w-full justify-between place-items-center">
-					<div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-700 rounded-full"></div>
+				<div className="flex flex-row justify-center place-items-center">
+					<Image
+						src="/img/logo.svg"
+						alt="Robot"
+						width={400}
+						height={300}
+						className={`${isOpen ? 'inline' : 'hidden'} w-auto h-[150px]`}
+					/>
 					<button
 						className="p-1 rounded-full flex"
 						onClick={() => handleOpenClose()}
