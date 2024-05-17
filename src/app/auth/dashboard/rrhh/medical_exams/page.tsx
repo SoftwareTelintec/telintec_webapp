@@ -1,10 +1,11 @@
 "use client";
 
 import { CalendarSelector, MySelect, TextInput } from "@/app/components";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ActionMeta } from "react-select";
 import axios from "axios";
 import DataTable from "react-data-table-component";
+import debounce from "lodash.debounce";
 
 const columns = [
   {
@@ -41,12 +42,15 @@ const columns = [
 ];
 
 interface ExaMedical {
+  id: any;
+  exist: string;
   id_exam: number;
   name: string;
   blood: string;
   status: string;
-  aptitudes: string;
+  aptitudes: Number;
   dates: string;
+
   emp_id: number;
 }
 interface Option {
@@ -72,12 +76,15 @@ const aptitudeOptions = [
 ];
 
 const INITIAL_EXAMEDICAL: ExaMedical = {
+  id: 0,
+  exist: "",
   id_exam: 0,
   name: "",
   blood: "",
   status: "",
-  aptitudes: "",
+  aptitudes: 0,
   dates: "",
+
   emp_id: 0,
 };
 
@@ -93,6 +100,7 @@ function MedicalPage() {
   );
   const [selectedState, setSelectedState] = useState(stateOptions[0]);
   const [selectedAptitude, setSelectedAptitude] = useState(aptitudeOptions[0]);
+  const [res, setRes] = useState("");
 
   function handleBloodTypeChange(option: Option) {
     setSelectedBloodType(option);
@@ -122,7 +130,7 @@ function MedicalPage() {
     await axios
       .get("http://localhost:5000/GUI/api/v1/rrhh/employees/medical/all")
       .then((res) => {
-        setExaMedicals(res.data);
+        setError(res.data);
       })
       .catch((err) => {
         setError(err);
@@ -134,30 +142,66 @@ function MedicalPage() {
   };
 
   const handleSelectedRow = (row: any) => {
-    const { id_exam, name, blood, status, aptitudes, dates, emp_id } = row;
-    setExaMedical({
+    const {
+      id,
+      exist,
       id_exam,
       name,
       blood,
       status,
       aptitudes,
       dates,
+
+      emp_id,
+    } = row;
+    setExaMedical({
+      id,
+      exist,
+      id_exam,
+      name,
+      blood,
+      status,
+      aptitudes,
+      dates,
+
       emp_id,
     });
   };
 
+  const debouncedHandleInputChange = useCallback(
+    debounce((name, value) => {
+      setExaMedical((prev): any => ({
+        ...prev,
+        [name]: value,
+      }));
+      console.log({ name, value });
+    }, 300),
+    []
+  );
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    debouncedHandleInputChange(name, value);
+  };
   // HTTP request
+  //      apt_actual: String(examedical.apt_actual),
   const postNewExaMedical = async () => {
     const data = {
-      info: {},
-      //id: 0,
+      info: {
+        name: String(examedical.name),
+        blood: String(examedical.blood),
+        status: String(examedical.status),
+        aptitudes: Number(examedical.aptitudes),
+        dates: String(examedical.dates),
+
+        emp_id: Number(examedical.emp_id),
+      },
     };
-    await axios("http://localhost:5000/GUI/api/v1/", {
+    await axios("http://127.0.0.1:5000/GUI/api/v1/rrhh/employee/medical", {
       method: "POST",
       data,
     })
       .then((res) => {
-        console.log(res.data);
+        setError(res.data);
       })
       .catch((err) => {
         setError(err);
@@ -165,15 +209,23 @@ function MedicalPage() {
   };
   const updateExaMedical = async () => {
     const data = {
-      info: {},
-      //id: 0,
+      id: examedical.id,
+      info: {
+        name: String(examedical.name),
+        blood: String(examedical.blood),
+        status: String(examedical.status),
+        aptitudes: Number(examedical.aptitudes),
+        dates: String(examedical.dates),
+
+        emp_id: Number(examedical.emp_id),
+      },
     };
-    await axios("http://localhost:5000/GUI/api/v1/", {
+    await axios("http://127.0.0.1:5000/GUI/api/v1/rrhh/employee/medical", {
       method: "POST",
       data,
     })
       .then((res) => {
-        console.log(res.data);
+        setError(res.data);
       })
       .catch((err) => {
         setError(err);
@@ -182,19 +234,22 @@ function MedicalPage() {
 
   const deleteExaMedical = async () => {
     const data = {
-      info: {},
-      //id: 0,
+      id: examedical.id,
     };
-    await axios("http://localhost:5000/GUI/api/v1/", {
+    await axios("http://127.0.0.1:5000/GUI/api/v1/rrhh/employee/medical", {
       method: "DELETE",
       data,
     })
       .then((res) => {
-        console.log(res.data);
+        setError(res.data);
       })
       .catch((err) => {
         setError(err);
       });
+  };
+
+  const cleanFields = () => {
+    setExaMedical(INITIAL_EXAMEDICAL);
   };
 
   useEffect(() => {
@@ -214,43 +269,90 @@ function MedicalPage() {
             </button>
           </div>
 
-          <TextInput label="Nombre" />
+          <TextInput
+            name="phone"
+            id="phone"
+            label="Nombre"
+            onChange={(e) => handleInputChange(e)}
+            defaultValue={examedical?.name ? String(examedical.name) : ""}
+          />
+          {/* onChange={setSelectedBloodType} */}
           <MySelect
             label="Tipo de Sangre"
             options={bloodTypeOptions}
             value={selectedBloodType}
-            onChange={setSelectedBloodType}
             placeholder="Selecciona un tipo de sangre"
+            onChange={(e) => {
+              setSelectedBloodType(e);
+              handleInputChange(e);
+            }}
           />
           <MySelect
             label="Estado"
             options={stateOptions}
             value={selectedState}
-            onChange={setSelectedState}
             placeholder="Selecciona un estado"
+            onChange={(e) => {
+              setSelectedState(e);
+              handleInputChange(e);
+            }}
           />
-          <MySelect
+          <TextInput
+            name=" aptitudes"
+            id="aptitudes"
+            label="Aptitudes"
+            onChange={(e) => handleInputChange(e)}
+            defaultValue={
+              examedical?.aptitudes ? String(examedical.aptitudes) : ""
+            }
+          />
+          {/* <TextInput
+            name=" apt_actual"
+            id="apt_actual"
+            label="Aptitudes"
+            onChange={(e) => handleInputChange(e)}
+            defaultValue={
+              examedical?.apt_actual ? String(examedical.apt_actual) : ""
+            }
+          /> */}
+
+          {/* <MySelect
             label="Aptitud"
             options={aptitudeOptions}
             value={selectedAptitude}
-            onChange={setSelectedAptitude}
             placeholder="Selecciona una aptitud"
-          />
+            onChange={(e) => {
+              setSelectedAptitude(e);
+              handleInputChange(e);
+            }}
+          /> */}
         </div>
 
         <div className="flex flex-row gap-5 w-full">
           <div className="flex flex-row gap-5 w-full">
             <div className="w-full flex gap-4 items-center justify-around px-4 py-6">
-              <button className="px-4 py-2 bg-indigo-400rounded-md text-neutral-800 font-semibold tracking-wider">
+              <button
+                className="px-4 py-2 bg-indigo-400rounded-md text-neutral-800 font-semibold tracking-wider"
+                onClick={cleanFields}
+              >
                 Limpiar Campos
               </button>
-              <button className="px-4 py-2 bg-indigo-400 rounded-md text-neutral-800 font-semibold tracking-wider">
+              <button
+                className="px-4 py-2 bg-indigo-400 rounded-md text-neutral-800 font-semibold tracking-wider"
+                onClick={postNewExaMedical}
+              >
                 Agregar Examen
               </button>
-              <button className="px-4 py-2 bg-indigo-400 rounded-md text-neutral-800 font-semibold tracking-wider">
+              <button
+                className="px-4 py-2 bg-indigo-400 rounded-md text-neutral-800 font-semibold tracking-wider"
+                onClick={updateExaMedical}
+              >
                 Actualizar Examen
               </button>
-              <button className="px-4 py-2 bg-[#cecece] rounded-md text-red-500 border border-red-500 font-semibold tracking-wider">
+              <button
+                className="px-4 py-2 bg-[#cecece] rounded-md text-red-500 border border-red-500 font-semibold tracking-wider"
+                onClick={deleteExaMedical}
+              >
                 Eliminar Examen
               </button>
               <button
