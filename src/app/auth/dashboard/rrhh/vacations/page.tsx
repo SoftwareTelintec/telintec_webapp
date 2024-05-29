@@ -84,7 +84,7 @@ function VacationsPage() {
 
 	const getAllVacations = async () => {
 		await axios
-			.get('http://localhost:5000/GUI/api/v1/rrhh/employees/vacations/all')
+			.get(`${process.env.NEXT_PUBLIC_API_HOST}/rrhh/employees/vacations/all`)
 			.then((res) => {
 				setVacations(res.data);
 			})
@@ -128,7 +128,7 @@ function VacationsPage() {
 				comentarios: String(vacation.seniority.comentarios),
 			},
 		};
-		await axios('http://localhost:5000/GUI/api/v1/rrhh/employees/vacation', {
+		await axios(`${process.env.NEXT_PUBLIC_API_HOST}/rrhh/employees/vacation`, {
 			method: 'POST',
 			data: data,
 		})
@@ -151,7 +151,7 @@ function VacationsPage() {
 			},
 		};
 
-		await axios('http://localhost:5000/GUI/api/v1/rrhh/employees/vacation', {
+		await axios(`${process.env.NEXT_PUBLIC_API_HOST}/rrhh/employees/vacation`, {
 			method: 'PUT',
 			data,
 		})
@@ -169,7 +169,7 @@ function VacationsPage() {
 			emp_id: vacation.emp_id,
 		};
 
-		await axios('http://localhost:5000/GUI/api/v1/rrhh/employees/vacation', {
+		await axios(`${process.env.NEXT_PUBLIC_API_HOST}/rrhh/employees/vacation`, {
 			method: 'DELETE',
 			data,
 		})

@@ -285,7 +285,8 @@ export default function LogsPage() {
 	};
 
 	const getAllEvents = async () => {
-		await axios('http://localhost:5000/GUI/api/v1/bitacora/fichaje/table', {
+		// ${process.env.${process.env.NEXT_PUBLIC_API_HOST}}
+		await axios(`${process.env.NEXT_PUBLIC_API_HOST}/bitacora/fichaje/table`, {
 			method: 'POST',
 			data: {
 				date: formatDate(new Date()),
@@ -322,7 +323,7 @@ export default function LogsPage() {
 	};
 
 	const getAllEmployees = async () => {
-		await axios('http://localhost:5000/GUI/api/v1/bitacora/employees', {
+		await axios(`${process.env.NEXT_PUBLIC_API_HOST}/bitacora/employees`, {
 			method: 'GET',
 		})
 			.then((response) => {
@@ -426,7 +427,7 @@ export default function LogsPage() {
 			id_emp: event.id_emp.value,
 			contract: event.contract.label,
 		};
-		await axios('http://localhost:5000/GUI/api/v1/bitacora/fichaje/event', {
+		await axios(`${process.env.NEXT_PUBLIC_API_HOST}/bitacora/fichaje/event`, {
 			method: 'POST',
 			data: data,
 		})
@@ -448,7 +449,7 @@ export default function LogsPage() {
 			id_emp: event.id_emp.value,
 			contract: event.contract.label,
 		};
-		await axios('http://localhost:5000/GUI/api/v1/bitacora/fichaje/event', {
+		await axios(`${process.env.NEXT_PUBLIC_API_HOST}/bitacora/fichaje/event`, {
 			method: 'PUT',
 			data: data,
 		})
@@ -468,7 +469,7 @@ export default function LogsPage() {
 			id_emp: event.id_emp.value,
 			contract: event.contract.label,
 		};
-		await axios('http://localhost:5000/GUI/api/v1/bitacora/fichaje/event', {
+		await axios(`${process.env.NEXT_PUBLIC_API_HOST}/bitacora/fichaje/event`, {
 			method: 'DELETE',
 			data: data,
 		})

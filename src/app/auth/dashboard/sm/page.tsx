@@ -165,7 +165,7 @@ export default function MaterialRequest() {
 			},
 			items: sm.itemsStock,
 		};
-		await axios('http://localhost:5000/GUI/api/v1/sm/add', {
+		await axios(`${process.env.NEXT_PUBLIC_API_HOST}/sm/add`, {
 			method: 'POST',
 			data: data,
 		})
@@ -178,7 +178,7 @@ export default function MaterialRequest() {
 	};
 
 	const deleteSm = async () => {
-		await axios('http://localhost:5000/GUI/api/v1/sm/add', {
+		await axios(`${process.env.NEXT_PUBLIC_API_HOST}/sm/add`, {
 			method: 'DELETE',
 			data: { id: sm.id, sm_code: sm.sm_code },
 		})
@@ -210,7 +210,7 @@ export default function MaterialRequest() {
 			},
 			items: sm.itemsStock || [],
 		};
-		await axios('http://localhost:5000/GUI/api/v1/sm/add', {
+		await axios(`${process.env.NEXT_PUBLIC_API_HOST}/sm/add`, {
 			method: 'PUT',
 			data: data,
 		})
@@ -223,7 +223,7 @@ export default function MaterialRequest() {
 	};
 
 	const getAllProducts = async () => {
-		await axios('http://localhost:5000/GUI/api/v1/sm/products', {
+		await axios(`${process.env.NEXT_PUBLIC_API_HOST}/sm/products`, {
 			method: 'POST',
 			data: {
 				limit: 1000,
@@ -249,13 +249,16 @@ export default function MaterialRequest() {
 
 	const getAllSms = async () => {
 		try {
-			const response = await axios('http://localhost:5000/GUI/api/v1/sm/all', {
-				method: 'POST',
-				data: {
-					limit: 100,
-					page: 0,
-				},
-			});
+			const response = await axios(
+				`${process.env.NEXT_PUBLIC_API_HOST}/sm/all`,
+				{
+					method: 'POST',
+					data: {
+						limit: 100,
+						page: 0,
+					},
+				}
+			);
 
 			const transformedData = response.data.data.map((sm: any) => ({
 				...sm,
@@ -273,7 +276,7 @@ export default function MaterialRequest() {
 
 	const getAllClients = async () => {
 		await axios
-			.get('http://localhost:5000/GUI/api/v1/sm/clients')
+			.get(`${process.env.NEXT_PUBLIC_API_HOST}/sm/clients`)
 			.then((response) => {
 				setClients(response?.data);
 			})
@@ -404,6 +407,7 @@ export default function MaterialRequest() {
 		getAllProducts();
 		getAllSms();
 		getAllClients();
+		console.log(process.env.NEXT_PUBLIC_API_HOST);
 	}, []);
 
 	useEffect(() => {

@@ -103,7 +103,7 @@ export default function SmProcessingPage() {
 
 	const getAllSms = async () => {
 		try {
-			const response = await axios('http://localhost:5000/GUI/api/v1/sm/all', {
+			const response = await axios(`${process.env.API_HOST}/sm/all`, {
 				method: 'POST',
 				data: {
 					limit: 100,

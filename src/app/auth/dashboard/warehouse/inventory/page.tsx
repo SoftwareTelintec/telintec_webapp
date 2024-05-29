@@ -112,7 +112,9 @@ function InventoryPage() {
 
 	const getAllCategories = async () => {
 		await axios
-			.get('http://localhost:5000/GUI/api/v1/almacen/inventory/categories/all')
+			.get(
+				`${process.env.NEXT_PUBLIC_API_HOST}/almacen/inventory/categories/all`
+			)
 			.then((res) => {
 				setCategories(res.data);
 			})
@@ -123,7 +125,9 @@ function InventoryPage() {
 
 	const getAllSuppliers = async () => {
 		await axios
-			.get('http://localhost:5000/GUI/api/v1/almacen/inventory/suppliers/all')
+			.get(
+				`${process.env.NEXT_PUBLIC_API_HOST}/almacen/inventory/suppliers/all`
+			)
 			.then((res) => {
 				setSuppliers(res.data);
 			})
@@ -134,7 +138,7 @@ function InventoryPage() {
 
 	const getAllProducts = async () => {
 		await axios
-			.get('http://localhost:5000/GUI/api/v1/almacen/inventory/products/all')
+			.get(`${process.env.NEXT_PUBLIC_API_HOST}/almacen/inventory/products/all`)
 			.then((res) => {
 				setProducts(res.data);
 			})
@@ -220,10 +224,13 @@ function InventoryPage() {
 			},
 			id: 0,
 		};
-		await axios('http://localhost:5000/GUI/api/v1/almacen/inventory/product', {
-			method: 'POST',
-			data,
-		})
+		await axios(
+			`${process.env.NEXT_PUBLIC_API_HOST}/almacen/inventory/product`,
+			{
+				method: 'POST',
+				data,
+			}
+		)
 			.then((res) => {
 				setRes(res.data);
 			})
@@ -247,10 +254,13 @@ function InventoryPage() {
 			},
 			id: 0,
 		};
-		await axios('http://localhost:5000/GUI/api/v1/almacen/inventory/product', {
-			method: 'PUT',
-			data,
-		})
+		await axios(
+			`${process.env.NEXT_PUBLIC_API_HOST}/almacen/inventory/product`,
+			{
+				method: 'PUT',
+				data,
+			}
+		)
 			.then((res) => {
 				setRes(res.data);
 			})
@@ -263,10 +273,13 @@ function InventoryPage() {
 		const data = {
 			id: product.id,
 		};
-		await axios('http://localhost:5000/GUI/api/v1/almacen/inventory/product', {
-			method: 'DELETE',
-			data,
-		})
+		await axios(
+			`${process.env.NEXT_PUBLIC_API_HOST}/almacen/inventory/product`,
+			{
+				method: 'DELETE',
+				data,
+			}
+		)
 			.then((res) => {
 				setRes(res.data);
 			})

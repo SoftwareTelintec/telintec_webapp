@@ -40,7 +40,7 @@ function SurverysPage() {
 	//fetching
 	const getSelectedSurvey = async (value: number | null = null) => {
 		await axios(
-			`http://localhost:5000/GUI/api/v1/rrhh/download/quizz/${value}`,
+			`${process.env.NEXT_PUBLIC_API_HOST}/rrhh/download/quizz/${value}`,
 			{
 				method: 'GET',
 			}
@@ -55,7 +55,7 @@ function SurverysPage() {
 
 	const getAllEmployees = async () => {
 		await axios
-			.get('http://localhost:5000/GUI/api/v1/rrhh/employees/fichaje/all')
+			.get(`${process.env.NEXT_PUBLIC_API_HOST}/rrhh/employees/fichaje/all`)
 			.then((response) => {
 				setEmployeesSurve(response.data.data as Employee[]);
 			})

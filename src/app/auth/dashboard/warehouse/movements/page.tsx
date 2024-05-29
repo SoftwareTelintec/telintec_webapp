@@ -79,7 +79,7 @@ function MovementsPage() {
 			id: movement?.id,
 		};
 		await axios
-			.post('http://localhost:5000/GUI/api/v1/almacen/movement', data)
+			.post(`${process.env.NEXT_PUBLIC_API_HOST}/almacen/movement`, data)
 			.then((res) => {
 				console.log(res.data);
 			})
@@ -101,7 +101,7 @@ function MovementsPage() {
 			},
 			id: movement?.id,
 		};
-		await axios('http://localhost:5000/GUI/api/v1/almacen/movement', {
+		await axios(`${process.env.NEXT_PUBLIC_API_HOST}/almacen/movement`, {
 			data: data,
 			method: 'PUT',
 		})
@@ -117,7 +117,7 @@ function MovementsPage() {
 		const data = {
 			id: movement?.id,
 		};
-		await axios(`http://localhost:5000/GUI/api/v1/almacen/movement`, {
+		await axios(`${process.env.NEXT_PUBLIC_API_HOST}/almacen/movement`, {
 			method: 'DELETE',
 			data: data,
 		})
@@ -131,7 +131,7 @@ function MovementsPage() {
 
 	const getAllIns = async () => {
 		await axios
-			.get('http://localhost:5000/GUI/api/v1/almacen/movements/entrada')
+			.get(`${process.env.NEXT_PUBLIC_API_HOST}/almacen/movements/entrada`)
 			.then((res) => {
 				setIns(res.data.data);
 			})
@@ -142,7 +142,7 @@ function MovementsPage() {
 
 	const getAllOuts = async () => {
 		await axios
-			.get('http://localhost:5000/GUI/api/v1/almacen/movements/salida')
+			.get(`${process.env.NEXT_PUBLIC_API_HOST}/almacen/movements/salida`)
 			.then((res) => {
 				setOuts(res.data.data);
 			})

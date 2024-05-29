@@ -32,7 +32,7 @@ function ClientsPage() {
 
 	const postNewClient = async () => {
 		await axios
-			.post('http://localhost:5000/GUI/api/v1/sm/newclient', client)
+			.post(`${process.env.NEXT_PUBLIC_API_HOST}/sm/newclient`, client)
 			.then((res) => {
 				console.log(res.data);
 			})
@@ -44,7 +44,7 @@ function ClientsPage() {
 	// TODO: Add a function to get all clients from the database
 	const getAllClients = async () => {
 		await axios
-			.get('http://localhost:5000/GUI/api/v1/sm/clients')
+			.get(`${process.env.NEXT_PUBLIC_API_HOST}/sm/clients`)
 			.then((res) => {
 				setClients(res.data);
 				console.log(res.data);

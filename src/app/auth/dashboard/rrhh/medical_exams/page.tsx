@@ -137,7 +137,7 @@ function MedicalPage() {
 
 	const getAllExaMedical = async () => {
 		await axios
-			.get('http://localhost:5000/GUI/api/v1/rrhh/employees/medical/all')
+			.get(`${process.env.API_HOST}/rrhh/employees/medical/all`)
 			.then((res) => {
 				setExaMedicals(res.data);
 			})
@@ -205,7 +205,7 @@ function MedicalPage() {
 				emp_id: Number(examedical.emp_id),
 			},
 		};
-		await axios('http://localhost:5000/GUI/api/v1/rrhh/employee/medical', {
+		await axios(`${process.env.API_HOST}/rrhh/employee/medical`, {
 			method: 'POST',
 			data,
 		})
@@ -229,7 +229,7 @@ function MedicalPage() {
 				emp_id: Number(examedical.emp_id),
 			},
 		};
-		await axios('http://localhost:5000/GUI/api/v1/rrhh/employee/medical', {
+		await axios(`${process.env.API_HOST}/rrhh/employee/medical`, {
 			method: 'POST',
 			data,
 		})
@@ -245,7 +245,7 @@ function MedicalPage() {
 		const data = {
 			id: examedical.id,
 		};
-		await axios('http://localhost:5000/GUI/api/v1/rrhh/employee/medical', {
+		await axios(`${process.env.API_HOST}/rrhh/employee/medical`, {
 			method: 'DELETE',
 			data,
 		})

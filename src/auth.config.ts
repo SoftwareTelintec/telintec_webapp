@@ -19,7 +19,7 @@ export default {
 					password: hashedPassword,
 				};
 				const res = await fetch(
-					'http://localhost:5000/GUI/api/v1/auth/loginUP',
+					`${process.env.NEXT_PUBLIC_API_HOST}/auth/loginUP`,
 					{
 						method: 'POST',
 						headers: {

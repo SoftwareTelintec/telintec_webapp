@@ -34,7 +34,7 @@ export default function LogsPage() {
 
 	const fetchEmployees = async () => {
 		const response = await fetch(
-			'http://localhost:5000/GUI/api/v1/bitacora/employees'
+			`${process.env.NEXT_PUBLIC_API_HOST}/bitacora/employees`
 		);
 		const data = await response.json();
 		setEmployees(data.data);
@@ -53,7 +53,7 @@ export default function LogsPage() {
 
 	const fethEvents = async () => {
 		const response = await axios.post(
-			'http://localhost:5000/GUI/api/v1/bitacora/fichaje/table',
+			`${process.env.NEXT_PUBLIC_API_HOST}/bitacora/fichaje/table`,
 			{
 				date: formatDate(startDate),
 			}

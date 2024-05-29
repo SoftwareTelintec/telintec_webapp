@@ -167,7 +167,7 @@ function EmployeesPage() {
 
 	const getAllEmployees = async () => {
 		await axios
-			.get('http://localhost:5000/GUI/api/v1/rrhh/employees/info/all')
+			.get(`${process.env.NEXT_PUBLIC_API_HOST}/rrhh/employees/info/all`)
 			.then((res) => {
 				setEmployees(res.data);
 			})
@@ -264,7 +264,7 @@ function EmployeesPage() {
 				// exam_id: Number(employee.exam_id),
 			},
 		};
-		await axios('http://localhost:5000/GUI/api/v1/rrhh/employee', {
+		await axios(`${process.env.NEXT_PUBLIC_API_HOST}/rrhh/employee`, {
 			method: 'POST',
 			data: employeeData,
 		})
@@ -302,7 +302,7 @@ function EmployeesPage() {
 			},
 		};
 
-		await axios('http://localhost:5000/GUI/api/v1/rrhh/employee', {
+		await axios(`${process.env.NEXT_PUBLIC_API_HOST}/rrhh/employee`, {
 			method: 'PUT',
 			data: employeeData,
 		})
@@ -320,7 +320,7 @@ function EmployeesPage() {
 			id: employee.id,
 		};
 
-		await axios('http://localhost:5000/GUI/api/v1/rrhh/employee', {
+		await axios(`${process.env.NEXT_PUBLIC_API_HOST}/rrhh/employee`, {
 			method: 'DELETE',
 			data,
 		})
