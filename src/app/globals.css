@@ -62,3 +62,53 @@ body {
 		transform: translateX(100px);
 	}
 }
+
+.modal {
+	background: white;
+	padding: 20px;
+	border-radius: 10px;
+	width: 400px;
+	max-width: 90%;
+	margin: auto;
+}
+
+.overlay {
+	background: rgba(0, 0, 0, 0.5);
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.modal-content {
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+
+.modal-actions {
+	display: flex;
+	justify-content: space-between;
+}
+
+.confirm-button {
+	background: green;
+	color: white;
+	padding: 10px;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+.cancel-button {
+	background: red;
+	color: white;
+	padding: 10px;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+}

@@ -1,13 +1,13 @@
 'use client';
 
-import { use, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import { CalendarSelector, TextInput, MySelect } from '@/app/components';
 import { formatDate } from '@/utils';
 import debounce from 'lodash.debounce';
 import DataTable from 'react-data-table-component';
 import { useSession } from 'next-auth/react';
-import { set } from 'react-hook-form';
+import CustomModal from '@/app/components/ui/CustomModal';
 
 const contractsOptions = [
 	{
@@ -215,22 +215,47 @@ const columns = [
 
 interface Event {
 	id: number;
-	date: string;
-	event: string;
-	value: number;
-	comment: string;
-	id_emp: number;
-	contract: string;
+	date: Date;
+	event: {
+		value: string;
+		label: string;
+	};
+	hour: number;
+	min: number;
+	id_emp: {
+		value: string;
+		label: string;
+	};
+	contract: {
+		value: string;
+		label: string;
+	};
+	inicident: {
+		value: string;
+		label: string;
+	};
+	prima: boolean;
+	activity: string;
+	place: {
+		value: string;
+		label: string;
+	};
+	comments: string;
 }
 
 const INITIAL_EVENT: Event = {
 	id: 0,
-	date: formatDate(new Date()),
-	event: 'FALTA',
-	value: 0,
-	comment: '',
-	id_emp: 0,
-	contract: 'AUTO',
+	id_emp: { value: '0', label: 'Selecciona un empleado' },
+	contract: { value: '0', label: 'Selecciona un contrato' },
+	date: new Date(),
+	event: { value: '0', label: 'Selecciona un tipo de evento' },
+	inicident: { value: '0', label: 'Selecciona un tipo de incidencia' },
+	activity: '',
+	place: { value: '0', label: 'Selecciona un lugar' },
+	comments: '',
+	prima: false,
+	hour: 0,
+	min: 0,
 };
 
 export default function LogsPage() {
@@ -238,9 +263,26 @@ export default function LogsPage() {
 	const [events, setEvents] = useState([]);
 	const [event, setEvent] = useState<Event>(INITIAL_EVENT);
 	const [error, setError] = useState();
-	const [currentEvent, setCurrentEvent] = useState(eventsOptions[0]);
 	const [showTable, setShowTable] = useState(false);
 	const [loading, setLoading] = useState(true);
+	const [modalIsOpen, setModalIsOpen] = useState(false);
+	const [modalMessage, setModalMessage] = useState('');
+	const [confirmAction, setConfirmAction] = useState(() => () => {});
+
+	const openModal = (message, action) => {
+		setModalMessage(message);
+		setConfirmAction(() => action);
+		setModalIsOpen(true);
+	};
+
+	const closeModal = () => {
+		setModalIsOpen(false);
+	};
+
+	const handleConfirm = () => {
+		confirmAction();
+		closeModal();
+	};
 
 	const getAllEvents = async () => {
 		await axios('http://localhost:5000/GUI/api/v1/bitacora/fichaje/table', {
@@ -299,10 +341,6 @@ export default function LogsPage() {
 			String(employee[2]).toUpperCase(),
 	}));
 
-	const handleEventChange = (event) => {
-		setCurrentEvent(event);
-	};
-
 	const hadleShowTable = () => {
 		setShowTable(!showTable);
 	};
@@ -312,7 +350,11 @@ export default function LogsPage() {
 	};
 
 	const handleDate = (date) => {
-		setEvent({ ...event, date: formatDate(date) });
+		setEvent({ ...event, date });
+	};
+
+	const convertHHToMinutes = (hours: number, minutes: number) => {
+		return (hours * 60 + minutes) / 60;
 	};
 
 	useEffect(() => {
@@ -323,6 +365,121 @@ export default function LogsPage() {
 		getAllEvents();
 	}, [event.date]);
 
+	const handleEvent = (selectedOption: { value: string; label: string }) => {
+		const { value } = selectedOption;
+		setEvent({
+			...event,
+			event: eventsOptions[value],
+			inicident: { value: '0', label: 'Selecciona un tipo de incidencia' },
+			activity: '',
+			place: { value: '0', label: 'Selecciona un lugar' },
+			comments: '',
+			prima: false,
+			hour: 0,
+			min: 0,
+		});
+	};
+
+	const handleEmployee = (selectedOption: { value: string; label: string }) => {
+		const { value } = selectedOption;
+		setEvent({
+			...event,
+			id_emp: employeesOptions.find((employee) => employee.value === value),
+		});
+	};
+
+	const handleContract = (selectedOption: { value: string; label: string }) => {
+		const { value } = selectedOption;
+		setEvent({ ...event, contract: contractsOptions[value] });
+	};
+
+	const handleIncident = (selectedOption: { value: string; label: string }) => {
+		const { value } = selectedOption;
+		setEvent({ ...event, inicident: incidentsOptions[value] });
+	};
+
+	const handleInputChange = (e) => {
+		const { name, value } = e.target;
+		setEvent({ ...event, [name]: value });
+	};
+
+	const handlePlace = (selectedOption: { value: string; label: string }) => {
+		const { value } = selectedOption;
+		setEvent({ ...event, place: placeOptions[value] });
+	};
+
+	const handleCheckboxChange = () => {
+		setEvent({ ...event, prima: !event.prima });
+	};
+
+	const clearFields = () => {
+		setEvent(INITIAL_EVENT);
+	};
+
+	const postNewSm = async () => {
+		const data = {
+			id: 0,
+			date: formatDate(event.date),
+			event: event.event.label.toLowerCase(),
+			value: convertHHToMinutes(event.hour, event.min),
+			comment: event.comments,
+			id_emp: event.id_emp.value,
+			contract: event.contract.label,
+		};
+		await axios('http://localhost:5000/GUI/api/v1/bitacora/fichaje/event', {
+			method: 'POST',
+			data: data,
+		})
+			.then((response) => {
+				console.log(response.data);
+			})
+			.catch((error) => {
+				setError(error);
+			});
+	};
+
+	const putNewSm = async () => {
+		const data = {
+			id: event.id,
+			date: formatDate(event.date),
+			event: event.event.label,
+			value: convertHHToMinutes(event.hour, event.min),
+			comment: event.comments,
+			id_emp: event.id_emp.value,
+			contract: event.contract.label,
+		};
+		await axios('http://localhost:5000/GUI/api/v1/bitacora/fichaje/event', {
+			method: 'PUT',
+			data: data,
+		})
+			.then((response) => {
+				console.log(response.data);
+			})
+			.catch((error) => {
+				setError(error);
+			});
+	};
+
+	const deleteSm = async () => {
+		const data = {
+			id: event.id,
+			date: formatDate(event.date),
+			event: event.event.label,
+			id_emp: event.id_emp.value,
+			contract: event.contract.label,
+		};
+		await axios('http://localhost:5000/GUI/api/v1/bitacora/fichaje/event', {
+			method: 'DELETE',
+			data: data,
+		})
+			.then((response) => {
+				console.log(response.data);
+			})
+			.catch((error) => {
+				setError(error);
+			});
+	};
+
 	return (
 		<section className="flex flex-col p-10 ml-20 w-full gap-5 2xl:container 2xl:mx-auto">
 			<h2 className="text-4xl text-neutral-200">Bitacora</h2>
@@ -331,15 +488,23 @@ export default function LogsPage() {
 					label="Empleado"
 					placeholder="Selecciona un empleado"
 					options={employeesOptions}
-					// value={sm?.status ? sm.status : { label: '', value: '' }}
-					// onChange={(e) => handleStatusChange(e)}
+					value={
+						event?.id_emp
+							? event.id_emp
+							: { label: '', value: 'Selecciona un empleado' }
+					}
+					onChange={handleEmployee}
 				/>
 				<MySelect
 					label="Contrato"
 					placeholder="Selecciona un contrato"
 					options={contractsOptions}
-					// value={sm?.status ? sm.status : { label: '', value: '' }}
-					// onChange={(e) => handleStatusChange(e)}
+					value={
+						event?.contract
+							? event.contract
+							: { label: '', value: 'Selecciona un contrato' }
+					}
+					onChange={handleContract}
 				/>
 				<CalendarSelector
 					label="Fecha"
@@ -350,58 +515,43 @@ export default function LogsPage() {
 					label="Evento"
 					placeholder="Selecciona un evento"
 					options={eventsOptions}
-					value={currentEvent}
-					onChange={(e) => handleEventChange(e)}
+					value={event.event}
+					onChange={handleEvent}
 				/>
-				{currentEvent.value === '0' && (
+				{event.event.value === '0' && (
 					<MySelect
 						label="Incidencia"
 						placeholder="Selecciona una incidencia"
 						options={incidentsOptions}
-						// value={sm?.status ? sm.status : { label: '', value: '' }}
-						// onChange={(e) => handleStatusChange(e)}
+						onChange={handleIncident}
+						value={event.inicident}
 					/>
 				)}
 
-				{currentEvent.value === '1' && (
-					<div className="flex gap-4">
-						<TextInput
-							id="hours"
-							label="Horas"
-							name="hours"
-							placeholder="HH"
-							// onChange={(e) => handleInputChange(e)}
-							// defaultValue={sm?.sm_code ? String(sm.sm_code) : ''}
-						/>
-						<TextInput
-							id="mins"
-							label="Minutos"
-							name="mins"
-							placeholder="MM"
-							// onChange={(e) => handleInputChange(e)}
-							// defaultValue={sm?.sm_code ? String(sm.sm_code) : ''}
-						/>
-					</div>
-				)}
+				{event.event.value === '1' ||
+					(event.event.value === '2' && (
+						<div className="flex gap-4">
+							<TextInput
+								id="hours"
+								label="Horas"
+								name="hours"
+								placeholder="HH"
+								onChange={(e) => handleInputChange(e)}
+								defaultValue={event?.hour ? String(event.hour) : ''}
+							/>
+							<TextInput
+								id="mins"
+								label="Minutos"
+								name="mins"
+								placeholder="MM"
+								onChange={(e) => handleInputChange(e)}
+								defaultValue={event?.min ? String(event.min) : ''}
+							/>
+						</div>
+					))}
 
-				{currentEvent.value === '2' && (
+				{event.event.value === '2' && (
 					<div className="flex gap-4">
-						<TextInput
-							id="hours"
-							label="Horas"
-							name="hours"
-							placeholder="HH"
-							// onChange={(e) => handleInputChange(e)}
-							// defaultValue={sm?.sm_code ? String(sm.sm_code) : ''}
-						/>
-						<TextInput
-							id="mins"
-							label="Minutos"
-							name="mins"
-							placeholder="MM"
-							// onChange={(e) => handleInputChange(e)}
-							// defaultValue={sm?.sm_code ? String(sm.sm_code) : ''}
-						/>
 						<div className="flex flex-col items-center justify-center w-1/3">
 							<label htmlFor="prima">Aplica prima</label>
 							<input
@@ -409,18 +559,22 @@ export default function LogsPage() {
 								name="prima"
 								id="prima"
 								className="w-8 h-4 cursor-pointer mt-2"
+								onChange={handleCheckboxChange}
+								value={String(event?.prima)}
 							/>
 						</div>
 					</div>
 				)}
+
 				<TextInput
 					id="activity"
 					label="Actividad"
 					name="activity"
 					placeholder="Ingresa la actividad a realizar"
-					// onChange={(e) => handleInputChange(e)}
-					// defaultValue={sm?.sm_code ? String(sm.sm_code) : ''}
+					onChange={(e) => handleInputChange(e)}
+					defaultValue={event?.activity ? String(event.activity) : ''}
 				/>
+
 				<MySelect
 					label="Lugar"
 					placeholder="Selecciona un lugar"
@@ -428,16 +582,21 @@ export default function LogsPage() {
 						...option,
 						label: option.label.toUpperCase(),
 					}))}
-					// value={sm?.status ? sm.status : { label: '', value: '' }}
-					// onChange={(e) => handleStatusChange(e)}
+					value={
+						event?.place
+							? event.place
+							: { label: '', value: 'Selecciona un Lugar' }
+					}
+					onChange={handlePlace}
 				/>
+
 				<TextInput
 					id="comments"
 					label="Comentarios"
 					name="comments"
 					placeholder="Ingresa el comentario"
-					// onChange={(e) => handleInputChange(e)}
-					// defaultValue={sm?.sm_code ? String(sm.sm_code) : ''}
+					defaultValue={event?.comments ? String(event.comments) : ''}
+					onChange={(e) => handleInputChange(e)}
 				/>
 			</div>
 
@@ -445,25 +604,31 @@ export default function LogsPage() {
 				<div className="w-full flex gap-4 items-center justify-around px-4 py-6">
 					<button
 						className="px-4 py-2 bg-cyan-700 rounded-md text-neutral-800 font-semibold tracking-wider"
-						// onClick={clearFields}
+						onClick={clearFields}
 					>
 						Limpiar Campos
 					</button>
 					<button
 						className="px-4 py-2 bg-cyan-700 rounded-md text-neutral-800 font-semibold tracking-wider"
-						// onClick={postNewSm}
+						onClick={() =>
+							openModal('¿Estás seguro de agregar la solicitud?', postNewSm)
+						}
 					>
 						Agregar Solicitud
 					</button>
 					<button
 						className="px-4 py-2 bg-cyan-700 rounded-md text-neutral-800 font-semibold tracking-wider"
-						// onClick={putNewSm}
+						onClick={() =>
+							openModal('¿Estás seguro de actualizar la solicitud?', putNewSm)
+						}
 					>
 						Actualizar Solicitud
 					</button>
 					<button
 						className="px-4 py-2 bg-[#cecece] rounded-md text-red-500 border border-red-500 font-semibold tracking-wider"
-						// onClick={deleteSm}
+						onClick={() =>
+							openModal('¿Estás seguro de eliminar la solicitud?', deleteSm)
+						}
 					>
 						Eliminar Solicitud
 					</button>
@@ -485,6 +650,12 @@ export default function LogsPage() {
 					/>
 				)}
 			</div>
+			<CustomModal
+				isOpen={modalIsOpen}
+				onRequestClose={closeModal}
+				onConfirm={handleConfirm}
+				message={modalMessage}
+			/>
 		</section>
 	);
 }
