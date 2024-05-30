@@ -26,3 +26,6 @@ jobs:
         cache: 'npm'
     - run: npm ci
     - run: npm run build --if-present
+    - name: Change directory
+      run: cd /home/telintec_server/actions-runner/_work/telintec_webapp/telintec_webapp
+    - run: pm2 restart 0
