@@ -25,6 +25,8 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm ci
+    - name: Install dependencies
+      run: npm install
     - run: npm run build --if-present
     - name: Change directory
       run: cd /home/telintec_server/actions-runner/_work/telintec_webapp/telintec_webapp
