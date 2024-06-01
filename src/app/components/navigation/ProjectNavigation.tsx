@@ -1,10 +1,7 @@
 import {
 	ArchiveBoxIcon,
-	ArrowTrendingUpIcon,
-	BoltIcon,
 	DocumentArrowUpIcon,
 	DocumentChartBarIcon,
-	PencilIcon,
 	UserGroupIcon,
 	XMarkIcon,
 } from '@heroicons/react/24/outline';
@@ -59,10 +56,16 @@ const ProjectNavigation = ({
 				{selectedProject.toLocaleLowerCase() === 'rrhh' && (
 					<>
 						<NavigationLink
+							name="Empleados Info"
+							href="/auth/dashboard/rrhh/employees-stats"
+						>
+							<UserGroupIcon className="stroke-[0.75] stroke-inherit min-w-8 w-8" />
+						</NavigationLink>
+						<NavigationLink
 							name="Empleados"
 							href="/auth/dashboard/rrhh/employees"
 						>
-							<ArrowTrendingUpIcon className="stroke-[0.75] stroke-inherit min-w-8 w-8" />
+							<UserGroupIcon className="stroke-[0.75] stroke-inherit min-w-8 w-8" />
 						</NavigationLink>
 						<NavigationLink
 							name="Examenes Medicos"
@@ -74,13 +77,13 @@ const ProjectNavigation = ({
 							name="Vacaciones"
 							href="/auth/dashboard/rrhh/vacations"
 						>
-							<PencilIcon className="stroke-[0.75] stroke-inherit min-w-8 w-8" />
+							<UserGroupIcon className="stroke-[0.75] stroke-inherit min-w-8 w-8" />
 						</NavigationLink>
 						<NavigationLink
 							name="Encuestas"
 							href="/auth/dashboard/rrhh/surveys"
 						>
-							<BoltIcon className="stroke-[0.75] stroke-inherit min-w-8 w-8" />
+							<UserGroupIcon className="stroke-[0.75] stroke-inherit min-w-8 w-8" />
 						</NavigationLink>
 					</>
 				)}

@@ -8,6 +8,7 @@ import debounce from 'lodash.debounce';
 import DataTable from 'react-data-table-component';
 import { useSession } from 'next-auth/react';
 import CustomModal from '@/app/components/ui/CustomModal';
+import { set } from 'react-hook-form';
 
 const contractsOptions = [
 	{
@@ -313,6 +314,7 @@ export default function LogsPage() {
 						};
 						dataFormatted.push(obj);
 						setEvents(dataFormatted);
+						console.log(events);
 					});
 					setLoading(false);
 				}
@@ -347,6 +349,32 @@ export default function LogsPage() {
 	};
 
 	const handleSelectedRow = (row) => {
+		const {
+			id,
+			idEmployee,
+			name,
+			contract,
+			event,
+			location,
+			activity,
+			timestamp,
+			value,
+			comment,
+		} = row;
+		setEvent({
+			id: id,
+			id_emp: { value: idEmployee, label: name },
+			contract: { value: '0', label: contract },
+			date: new Date(timestamp),
+			event: { value: '0', label: event },
+			inicident: { value: '0', label: 'Selecciona un tipo de incidencia' },
+			activity: activity,
+			place: { value: '0', label: location },
+			comments: comment,
+			prima: false,
+			hour: 0,
+			min: 0,
+		});
 		console.log(row);
 	};
 

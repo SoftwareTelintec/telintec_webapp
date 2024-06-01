@@ -134,9 +134,14 @@ export const pagesPerRole = [
 	{
 		role: 'almacen',
 		pages: [
+			// '/auth/dashboard',
+			// '/auth/dashboard/warehouse',
+			// '/auth/dashboard/sm',
 			'/auth/dashboard',
 			'/auth/dashboard/warehouse',
+			'/auth/dashboard/rrhh',
 			'/auth/dashboard/sm',
+			'/auth/dashboard/logs',
 		],
 	},
 	{

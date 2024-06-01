@@ -22,10 +22,7 @@ export default function MainApp({
 	}, [session]);
 
 	return (
-		<body
-			className="w-full min-h-screen h-auto flex flex-row items-center justify-center relative bg-svg-pattern bg-no-repeat bg-cover"
-			id="app"
-		>
+		<body className="w-full min-h-screen h-auto flex flex-row items-center justify-center relative bg-svg-pattern bg-no-repeat bg-cover">
 			{showNav && <Navigation />}
 			<div id="modal-root"></div>
 			{children}
