@@ -105,16 +105,6 @@ function SurverysPage() {
 		setAnswers([]);
 	};
 
-	const downloadJSON = () => {
-		const jsonString = JSON.stringify(answers, null, 2); // Formatea el JSON para que sea más legible
-		const blob = new Blob([jsonString], { type: 'application/json' });
-		const url = window.URL.createObjectURL(blob);
-		const link = document.createElement('a');
-		link.href = url;
-		link.download = 'survey_responses.json';
-		link.click();
-		window.URL.revokeObjectURL(url);
-	};
 	const downloadCSV = () => {
 		const csvRows = [];
 		const headers = ['questionId', 'answer'];
