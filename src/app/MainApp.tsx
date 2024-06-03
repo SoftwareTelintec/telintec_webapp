@@ -3,6 +3,7 @@
 import Navigation from '@/app/components/navigation/Navigation';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
+import AssistanModal from './components/assistant/asistantModal';
 
 export default function MainApp({
 	children,
@@ -26,6 +27,7 @@ export default function MainApp({
 			{showNav && <Navigation />}
 			<div id="modal-root"></div>
 			{children}
+			<AssistanModal roles={session?.data?.user?.name?.role} />
 		</body>
 	);
 }
