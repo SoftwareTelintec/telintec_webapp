@@ -53,7 +53,9 @@ export default function MySelect({
 	return (
 		isMounted && (
 			<div className="flex flex-col items-start gap-2 justify-center w-full">
-				<label htmlFor={id}>{label}</label>
+				<label htmlFor={id} className="text-white">
+					{label}
+				</label>
 				<Select
 					{...rest}
 					name={id}

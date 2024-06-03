@@ -36,6 +36,7 @@ function SurverysPage() {
 	} | null>(null);
 	const [showSurveys, setShowSurveys] = useState(false);
 	const [selectedSurveyType, setSelectedSurveyType] = useState(surveyTypes[0]);
+	const [answers, setAnswers] = useState({});
 
 	//fetching
 	const getSelectedSurvey = async (value: number | null = null) => {
@@ -92,6 +93,67 @@ function SurverysPage() {
 		await getSelectedSurvey(Number(selectedSurveyType.value));
 	};
 
+	const handleSubmitSurvey = () => {
+		downloadCSV();
+		clearSuvery();
+	};
+
+	const clearSuvery = () => {
+		setShowSurveys(false);
+		setSelectedEmployee(null);
+		setSurvey([]);
+		setAnswers([]);
+	};
+
+	const downloadJSON = () => {
+		const jsonString = JSON.stringify(answers, null, 2); // Formatea el JSON para que sea más legible
+		const blob = new Blob([jsonString], { type: 'application/json' });
+		const url = window.URL.createObjectURL(blob);
+		const link = document.createElement('a');
+		link.href = url;
+		link.download = 'survey_responses.json';
+		link.click();
+		window.URL.revokeObjectURL(url);
+	};
+	const downloadCSV = () => {
+		const csvRows = [];
+		const headers = ['questionId', 'answer'];
+		csvRows.push(headers.join(','));
+
+		// Convertir el objeto de respuestas a filas CSV
+		for (const [key, value] of Object.entries(answers)) {
+			const row = [key, value];
+			csvRows.push(row.join(','));
+		}
+
+		const csvString = csvRows.join('\n');
+		const blob = new Blob([csvString], { type: 'text/csv' });
+		const url = window.URL.createObjectURL(blob);
+		const link = document.createElement('a');
+		link.href = url;
+		link.download = 'survey_responses.csv';
+		link.click();
+		window.URL.revokeObjectURL(url);
+	};
+
+	// save change into state
+	const handleOptionChange = (questionId, option) => {
+		setAnswers((prev) => ({
+			...prev,
+			[questionId]: limpiarTexto(option),
+		}));
+	};
+
+	const limpiarTexto = (texto) => {
+		// Normaliza el texto para separar letras de los acentos y diacríticos
+		const textoNormalizado = texto
+			.normalize('NFD')
+			.replace(/[\u0300-\u036f]/g, '');
+		// Elimina caracteres especiales excepto espacios
+		const textoLimpio = textoNormalizado.replace(/[^a-zA-Z0-9\s]/g, '');
+		return textoLimpio;
+	};
+
 	useEffect(() => {
 		getAllEmployees();
 	}, []);
@@ -122,6 +184,7 @@ function SurverysPage() {
 							placeholder="Seleccione un empleado"
 						/>
 						<div className="flex flex-col justify-center ">
+							<p className="text-white mb-2">Crear encuesta</p>
 							<button
 								className="px-4 py-2 h-auto min-h-10 bg-indigo-400 rounded-md text-neutral-800 font-semibold"
 								onClick={handleCreateSurvey}
@@ -149,23 +212,46 @@ function SurverysPage() {
 						)}
 						<div>
 							{survey?.options && survey.options.length > 0 ? (
-								survey.options.map((option: string, optionIndex: number) => (
-									<div key={optionIndex}>
-										<input
-											type="radio"
-											name={`question`}
-											id={`option${optionIndex}`}
-										/>
-										<label htmlFor={`option${optionIndex}`}>{option}</label>
-									</div>
-								))
+								survey.options.map((option: string, optionIndex: number) => {
+									const uniqueId = `${survey?.id}-option-${(
+										Math.random() * 1000
+									).toFixed(3)}`;
+									return (
+										<div key={uniqueId}>
+											<input
+												type="radio"
+												name={`option ${survey.id}`}
+												id={uniqueId}
+												className="w-4 h-4 cursor-pointer mr-2"
+												onChange={() => handleOptionChange(survey.id, option)}
+												checked={answers[survey.id] === option}
+											/>
+											<label htmlFor={uniqueId} className="cursor-pointer">
+												{option}
+											</label>
+										</div>
+									);
+								})
 							) : (
-								<textarea name="" id="" className="w-full"></textarea>
+								<textarea
+									onChange={(e) =>
+										handleOptionChange(survey.id, e.target.value)
+									}
+									value={answers[survey.id] || ''}
+									className="w-full"
+								></textarea>
 							)}
 						</div>
 					</section>
 				))}
-				{showSurveys && <button>Enviar encuesta</button>}
+				{showSurveys && (
+					<button
+						onClick={handleSubmitSurvey}
+						className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-700"
+					>
+						Enviar Encuesta
+					</button>
+				)}
 			</section>
 		</>
 	);
