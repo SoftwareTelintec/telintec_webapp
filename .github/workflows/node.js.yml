@@ -2,9 +2,9 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ['main']
   pull_request:
-    branches: [ "main" ]
+    branches: ['main']
 
 jobs:
   build:
@@ -16,18 +16,19 @@ jobs:
       NEXT_PUBLIC_API_HOST: ${{secrets.NEXT_PUBLIC_API_HOST}}
       AUTH_SECRET: ${{secrets.AUTH_SECRET}}
       NEXTAUTH_URL: ${{secrets.NEXTAUTH_URL}}
+      AUTH_TRUST_HOST: ${{secrets.AUTH_TRUST_HOST}}
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: npm ci
-    - name: Install dependencies
-      run: npm install
-    - run: npm run build --if-present
-    - name: Change directory
-      run: cd /home/telintec_server/actions-runner/_work/telintec_webapp/telintec_webapp
-    - run: pm2 restart 0
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      - run: npm ci
+      - name: Install dependencies
+        run: npm install
+      - run: npm run build --if-present
+      - name: Change directory
+        run: cd /home/telintec_server/actions-runner/_work/telintec_webapp/telintec_webapp
+      - run: pm2 restart 0

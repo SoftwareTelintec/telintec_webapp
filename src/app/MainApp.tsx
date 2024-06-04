@@ -27,7 +27,7 @@ export default function MainApp({
 			{showNav && <Navigation />}
 			<div id="modal-root"></div>
 			{children}
-			<AssistanModal roles={session?.data?.user?.name?.role} />
+			{/* <AssistanModal roles={session?.data?.user?.name?.role} /> */}
 		</body>
 	);
 }
