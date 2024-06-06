@@ -294,7 +294,6 @@ export default function LogsPage() {
 			},
 		})
 			.then((response) => {
-				console.log(response.data);
 				const responseData = response.data;
 				if (responseData && responseData.data && responseData.columns) {
 					const { data } = responseData;

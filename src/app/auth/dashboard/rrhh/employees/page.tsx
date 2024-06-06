@@ -103,16 +103,16 @@ interface Employee {
 	modality: string;
 	email: string;
 	contract: string;
-	admission: string;
+	admission: Date;
 	rfc: string;
 	curp: string;
 	nss: string;
 	emergency: string;
 	position: string;
 	status: string;
-	departure: string;
+	departure: Date | null;
 	exam_id: number;
-	birthday: string;
+	birthday: Date;
 	legajo: null;
 }
 
@@ -124,16 +124,16 @@ const INITIAL_EMPLOYEE: Employee = {
 	modality: '',
 	email: '',
 	contract: '',
-	admission: '',
+	admission: new Date(),
 	rfc: '',
 	curp: '',
 	nss: '',
 	emergency: '',
 	position: '',
 	status: '',
-	departure: '',
+	departure: null,
 	exam_id: 0,
-	birthday: '',
+	birthday: new Date(),
 	legajo: null,
 };
 
@@ -336,6 +336,18 @@ function EmployeesPage() {
 		setEmployee(INITIAL_EMPLOYEE);
 	};
 
+	const handleAdmissionDate = (date) => {
+		setEmployee({ ...employee, admission });
+	};
+
+	const handleDepartureDate = (date) => {
+		setEmployee({ ...employee, departure });
+	};
+
+	const handleBirthdayDate = (date) => {
+		setEmployee({ ...employee, birthday });
+	};
+
 	useEffect(() => {
 		getAllEmployees();
 		setTimeout(() => {
@@ -399,7 +411,11 @@ function EmployeesPage() {
 					onChange={(e) => handleInputChange(e)}
 					defaultValue={employee?.contract ? String(employee.contract) : ''}
 				/>
-				<CalendarSelector label="Fecha de Ingreso" />
+				<CalendarSelector
+					label="Fecha de Ingreso"
+					selectedDate={employee.admission}
+					onChange={handleAdmissionDate}
+				/>
 				<TextInput
 					name="rfc"
 					id="rfc"
@@ -456,7 +472,11 @@ function EmployeesPage() {
 					onChange={(e) => handleInputChange(e)}
 					defaultValue={employee?.status ? String(employee.status) : ''}
 				/>
-				<CalendarSelector label="Fecha de la baja" />
+				<CalendarSelector
+					label="Fecha de la baja"
+					selectedDate={employee.departure ? employee.departure : null}
+					onChange={handleDepartureDate}
+				/>
 				<TextInput
 					name="exam_id"
 					id="exam_id"
@@ -467,7 +487,8 @@ function EmployeesPage() {
 				/>
 				<CalendarSelector
 					label="Fecha de nacimiento"
-					onChange={(e) => handleInputChange(e)}
+					selectedDate={employee.birthday}
+					onChange={handleBirthdayDate}
 				/>
 				<TextInput
 					name="legajo"

@@ -6,6 +6,7 @@ import { ActionMeta } from 'react-select';
 import axios from 'axios';
 import DataTable from 'react-data-table-component';
 import debounce from 'lodash.debounce';
+import { set } from 'react-hook-form';
 
 const columns = [
 	{
@@ -53,19 +54,22 @@ const columns = [
 
 interface ExaMedical {
 	id: any;
-	exist: string;
-	id_exam: number;
 	name: string;
-	blood: string;
-	status: string;
-	aptitudes: Number;
-	dates: string;
+	blood: {
+		value: string;
+		label: string;
+	};
+	status: {
+		value: string;
+		label: string;
+	};
+	aptitudes: {
+		value: string;
+		label: string;
+	};
+	date: Date;
+	apt_actual: Number;
 	emp_id: number;
-	apt_actual?: string;
-}
-interface Option {
-	value: string;
-	label: string;
 }
 
 const bloodTypeOptions = [
@@ -87,15 +91,13 @@ const aptitudeOptions = [
 
 const INITIAL_EXAMEDICAL: ExaMedical = {
 	id: 0,
-	exist: '',
-	id_exam: 0,
 	name: '',
-	blood: '',
-	status: '',
-	aptitudes: 0,
-	dates: '',
+	blood: { value: '0', label: 'Selecciona un tipo de sangre' },
+	status: { value: '0', label: 'Selecciona un estatus' },
+	apt_actual: 0,
+	date: new Date(),
 	emp_id: 0,
-	apt_actual: '',
+	aptitudes: { value: '0', label: 'Selecciona una aptitud' },
 };
 
 function MedicalPage() {
@@ -104,40 +106,11 @@ function MedicalPage() {
 	const [error, setError] = useState('');
 	const [showTable, setShowTable] = useState(false);
 	const [loading, setLoading] = useState(false);
-	const [selectedBloodType, setSelectedBloodType] = useState(
-		bloodTypeOptions[0]
-	);
-	const [selectedState, setSelectedState] = useState(stateOptions[0]);
-	const [selectedAptitude, setSelectedAptitude] = useState(aptitudeOptions[0]);
 	const [res, setRes] = useState('');
-
-	function handleBloodTypeChange(option: Option) {
-		setSelectedBloodType(option);
-	}
-
-	function handleStateChange(option: Option) {
-		setSelectedState(option);
-	}
-
-	function handleAptitudeChange(option: Option) {
-		setSelectedAptitude(option);
-	}
-
-	function handleSelectChange(
-		option: Option | null,
-		actionMeta: ActionMeta<Option>
-	): void {
-		console.log('Action type:', actionMeta.action);
-		if (option) {
-			console.log('Selected option:', option);
-		} else {
-			console.log('No option selected');
-		}
-	}
 
 	const getAllExaMedical = async () => {
 		await axios
-			.get(`${process.env.API_HOST}/rrhh/employees/medical/all`)
+			.get(`${process.env.NEXT_PUBLIC_API_HOST}/rrhh/employees/medical/all`)
 			.then((res) => {
 				setExaMedicals(res.data);
 			})
@@ -151,29 +124,25 @@ function MedicalPage() {
 	};
 
 	const handleSelectedRow = (row: any) => {
-		const {
-			id,
-			exist,
-			id_exam,
-			name,
-			blood,
-			status,
-			aptitudes,
-			dates,
-
-			emp_id,
-		} = row;
+		const { id, name, blood, status, apt_actual, date, emp_id, aptitudes } =
+			row;
 		setExaMedical({
 			id,
-			exist,
-			id_exam,
 			name,
-			blood,
-			status,
-			aptitudes,
-			dates,
-
+			blood:
+				bloodTypeOptions[
+					bloodTypeOptions.findIndex((option) => option.value === blood)
+				],
+			status:
+				stateOptions[
+					stateOptions.findIndex(
+						(option) => option.value === status.toLowerCase()
+					)
+				],
+			apt_actual,
+			date,
 			emp_id,
+			aptitudes,
 		});
 	};
 
@@ -183,7 +152,6 @@ function MedicalPage() {
 				...prev,
 				[name]: value,
 			}));
-			console.log({ name, value });
 		}, 300),
 		[]
 	);
@@ -191,8 +159,7 @@ function MedicalPage() {
 		const { name, value } = e.target;
 		debouncedHandleInputChange(name, value);
 	};
-	// HTTP request
-	//      apt_actual: String(examedical.apt_actual),
+
 	const postNewExaMedical = async () => {
 		const data = {
 			info: {
@@ -200,12 +167,11 @@ function MedicalPage() {
 				blood: String(examedical.blood),
 				status: String(examedical.status),
 				aptitudes: Number(examedical.aptitudes),
-				dates: String(examedical.dates),
-
+				date: String(examedical.date),
 				emp_id: Number(examedical.emp_id),
 			},
 		};
-		await axios(`${process.env.API_HOST}/rrhh/employee/medical`, {
+		await axios(`${process.env.NEXT_PUBLIC_API_HOST}/rrhh/employee/medical`, {
 			method: 'POST',
 			data,
 		})
@@ -216,6 +182,7 @@ function MedicalPage() {
 				setError(err);
 			});
 	};
+
 	const updateExaMedical = async () => {
 		const data = {
 			id: examedical.id,
@@ -224,12 +191,11 @@ function MedicalPage() {
 				blood: String(examedical.blood),
 				status: String(examedical.status),
 				aptitudes: Number(examedical.aptitudes),
-				dates: String(examedical.dates),
-
+				date: String(examedical.date),
 				emp_id: Number(examedical.emp_id),
 			},
 		};
-		await axios(`${process.env.API_HOST}/rrhh/employee/medical`, {
+		await axios(`${process.env.NEXT_PUBLIC_API_HOST}/rrhh/employee/medical`, {
 			method: 'POST',
 			data,
 		})
@@ -245,7 +211,7 @@ function MedicalPage() {
 		const data = {
 			id: examedical.id,
 		};
-		await axios(`${process.env.API_HOST}/rrhh/employee/medical`, {
+		await axios(`${process.env.NEXT_PUBLIC_API_HOST}/rrhh/employee/medical`, {
 			method: 'DELETE',
 			data,
 		})
@@ -261,6 +227,22 @@ function MedicalPage() {
 		setExaMedical(INITIAL_EXAMEDICAL);
 	};
 
+	const handleDate = (date) => {
+		setExaMedical({ ...event, date });
+	};
+
+	function handleBloodTypeChange(option: { value: string; label: string }) {
+		setExaMedical({ ...examedical, blood: bloodTypeOptions[option.value] });
+	}
+
+	function handleStateChange(option: { value: string; label: string }) {
+		setExaMedical({ ...examedical, status: stateOptions[option.value] });
+	}
+
+	function handleAptitudeChange(option: { value: string; label: string }) {
+		setExaMedical({ ...examedical, aptitudes: aptitudeOptions[option.value] });
+	}
+
 	useEffect(() => {
 		getAllExaMedical();
 	}, []);
@@ -270,7 +252,11 @@ function MedicalPage() {
 			<section className="flex flex-col p-10 ml-20 w-full gap-5 2xl:container 2xl:mx-auto">
 				<h1 className="text-4xl text-neutral-200">Examenes Medicos</h1>
 				<div className="w-full h-80 border border-neutral-500/50 bg-neutral-800/20 rounded grid grid-cols-3 gap-4 px-4 py-6">
-					<CalendarSelector label="fecha" />
+					<CalendarSelector
+						label="fecha"
+						selectedDate={examedical.date}
+						onChange={handleDate}
+					/>
 					<TextInput label="ID Empleado" />
 					<TextInput
 						name="phone"
@@ -279,35 +265,19 @@ function MedicalPage() {
 						onChange={(e) => handleInputChange(e)}
 						defaultValue={examedical?.name ? String(examedical.name) : ''}
 					/>
-					{/* onChange={setSelectedBloodType} */}
 					<MySelect
 						label="Tipo de Sangre"
 						options={bloodTypeOptions}
-						value={selectedBloodType}
+						value={examedical.blood}
 						placeholder="Selecciona un tipo de sangre"
-						onChange={(e) => {
-							setSelectedBloodType(e);
-							handleInputChange(e);
-						}}
+						onChange={handleBloodTypeChange}
 					/>
 					<MySelect
 						label="Estado"
 						options={stateOptions}
-						value={selectedState}
+						value={examedical.status}
 						placeholder="Selecciona un estado"
-						onChange={(e) => {
-							setSelectedState(e);
-							handleInputChange(e);
-						}}
-					/>
-					<TextInput
-						name=" aptitudes"
-						id="aptitudes"
-						label="Aptitudes"
-						onChange={(e) => handleInputChange(e)}
-						defaultValue={
-							examedical?.aptitudes ? String(examedical.aptitudes) : ''
-						}
+						onChange={handleStateChange}
 					/>
 					<TextInput
 						name=" apt_actual"
@@ -321,8 +291,9 @@ function MedicalPage() {
 					<MySelect
 						label="Aptitud"
 						options={aptitudeOptions}
-						value={selectedAptitude}
+						value={examedical.aptitudes}
 						placeholder="Selecciona una aptitud"
+						onChange={handleAptitudeChange}
 					/>
 				</div>
 

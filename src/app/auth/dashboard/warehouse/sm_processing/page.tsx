@@ -103,13 +103,16 @@ export default function SmProcessingPage() {
 
 	const getAllSms = async () => {
 		try {
-			const response = await axios(`${process.env.API_HOST}/sm/all`, {
-				method: 'POST',
-				data: {
-					limit: 100,
-					page: 0,
-				},
-			});
+			const response = await axios(
+				`${process.env.NEXT_PUBLIC_API_HOST}/sm/all`,
+				{
+					method: 'POST',
+					data: {
+						limit: 100,
+						page: 0,
+					},
+				}
+			);
 
 			const transformedData = response.data.data.map((sm: any) => ({
 				...sm,
