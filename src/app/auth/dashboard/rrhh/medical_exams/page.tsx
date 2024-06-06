@@ -2,12 +2,9 @@
 
 import { CalendarSelector, MySelect, TextInput } from '@/app/components';
 import { useCallback, useEffect, useState } from 'react';
-import { ActionMeta } from 'react-select';
 import axios from 'axios';
 import DataTable from 'react-data-table-component';
 import debounce from 'lodash.debounce';
-import { set } from 'react-hook-form';
-
 const columns = [
 	{
 		name: 'ID Examen',
@@ -101,6 +98,8 @@ const INITIAL_EXAMEDICAL: ExaMedical = {
 };
 
 function MedicalPage() {
+	// TODO: AGREGAR FETCH DE EMPLEADOS
+	// TODO: AGREGAR AL DOBLBE CLICK QUE SE SELECCIONE EL EMPLEADO Y LA FECHA
 	const [examedicals, setExaMedicals] = useState<ExaMedical[]>();
 	const [examedical, setExaMedical] = useState<ExaMedical>(INITIAL_EXAMEDICAL);
 	const [error, setError] = useState('');
@@ -228,7 +227,7 @@ function MedicalPage() {
 	};
 
 	const handleDate = (date) => {
-		setExaMedical({ ...event, date });
+		setExaMedical({ ...examedical, date });
 	};
 
 	function handleBloodTypeChange(option: { value: string; label: string }) {
