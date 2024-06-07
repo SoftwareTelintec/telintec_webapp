@@ -95,10 +95,27 @@ const columns = [
 	},
 ];
 
+const data = [
+	{
+		id: '5',
+		name: 'Bandeja Modular para Fibra Óptica 2 U',
+		stock: 2,
+		comment: 'mmm  ;(Nuevo)  ;(Pedido)  ;(Despachado) ',
+		quantity: 2,
+	},
+	{
+		id: '1',
+		name: 'Adaptador Ind riel Din en rack 4RU',
+		stock: 28,
+		comment: 'nada ;(Despachado) ',
+		quantity: 2,
+	},
+];
+
 export default function SmProcessingPage() {
 	const [allSms, setAllSms] = useState([]);
 	const [loading, setLoading] = useState(true);
-	const [currentSm, setCurrentSm] = useState({ items: [], history: [] });
+	const [currentSm, setCurrentSm] = useState({ items: data, history: [] });
 
 	const getAllSms = async () => {
 		try {
@@ -116,7 +133,7 @@ export default function SmProcessingPage() {
 			const transformedData = response.data.data.map((sm: any) => ({
 				...sm,
 				history: JSON.stringify(sm.history),
-				items: JSON.stringify(sm.items),
+				items: JSON.parse(sm.items),
 			}));
 			setAllSms(transformedData);
 			setLoading(false);
@@ -140,6 +157,21 @@ export default function SmProcessingPage() {
 		}));
 	};
 
+	const handleInputChange = (
+		e: React.ChangeEvent<HTMLInputElement>,
+		id: string,
+		field: string
+	) => {
+		const { value } = e.target;
+		setCurrentSm((prev) => ({
+			...prev,
+			[id]: {
+				...prev[id],
+				[field]: value,
+			},
+		}));
+	};
+
 	useEffect(() => {
 		getAllSms();
 	}, []);
@@ -151,14 +183,62 @@ export default function SmProcessingPage() {
 			</h2>
 			<div className="w-full h-auto border border-neutral-500/50 bg-neutral-800/20 rounded grid grid-cols-2 gap-4 px-4 py-6">
 				<div className="flex flex-col gap-4">
-					<div className="flex flex-col gap-2">
-						<label htmlFor="products_sm">Productos del SM</label>
-						<textarea
-							name="products_sm"
-							id="products_sm"
-							defaultValue={currentSm ? currentSm.items : ''}
-							className="min-h-40 rounded-md p-1"
-						/>
+					<div className="container mx-auto p-4">
+						<h1 className="text-2xl font-bold mb-4">Productos</h1>
+						<table className="min-w-full bg-white border border-gray-200">
+							<thead>
+								<tr>
+									<th className="py-2 px-3 border-b">ID</th>
+									<th className="py-2 px-3 border-b">Nombre</th>
+									<th className="py-2 px-3 border-b">Stock</th>
+									<th className="py-2 px-3 border-b">Comentarios</th>
+									<th className="py-2 px-3 border-b">Cantidad</th>
+								</tr>
+							</thead>
+							<tbody>
+								{data.map((item) => (
+									<tr key={item.id}>
+										<td className="py-2 px-3 border-b">{item.id}</td>
+										<td className="py-2 px-3 border-b">
+											<input
+												type="text"
+												value={item.name}
+												onChange={(e) => handleInputChange(e, item.id, 'name')}
+												className="w-full border p-1"
+											/>
+										</td>
+										<td className="py-2 px-3 border-b">
+											<input
+												type="number"
+												value={item.stock}
+												onChange={(e) => handleInputChange(e, item.id, 'stock')}
+												className="w-full border p-1"
+											/>
+										</td>
+										<td className="py-2 px-3 border-b">
+											<input
+												type="text"
+												value={item.comment}
+												onChange={(e) =>
+													handleInputChange(e, item.id, 'comment')
+												}
+												className="w-full border p-1"
+											/>
+										</td>
+										<td className="py-2 px-3 border-b">
+											<input
+												type="number"
+												value={item.quantity}
+												onChange={(e) =>
+													handleInputChange(e, item.id, 'quantity')
+												}
+												className="w-full border p-1"
+											/>
+										</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
 					</div>
 					<div className="flex flex-col gap-2">
 						<label htmlFor="history_sm">Historial del SM</label>
