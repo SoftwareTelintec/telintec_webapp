@@ -2,7 +2,6 @@
 
 import { TextInput } from '@/app/components';
 import axios from 'axios';
-import { comment } from 'postcss';
 import React, { use, useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
 
@@ -123,7 +122,7 @@ export default function SmProcessingPage() {
 			setLoading(false);
 		} catch (error) {
 			console.error('Error fetching SMS data:', error);
-			setLoading(false); // Ensure loading state is updated even if there's an error
+			setLoading(false);
 		}
 	};
 

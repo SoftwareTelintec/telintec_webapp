@@ -7,6 +7,8 @@ import { formatDate } from '@/utils';
 import debounce from 'lodash.debounce';
 import DataTable from 'react-data-table-component';
 import { useSession } from 'next-auth/react';
+import useModal from '@/app/hooks/useModal';
+import CustomModal from '@/app/components/ui/CustomModal';
 
 const columns = [
 	{
@@ -105,12 +107,12 @@ const INITIAL_STATE = {
 	contract: '',
 	facility: '',
 	location: '',
-	client_id: { label: '', value: '' },
+	client_id: { label: 'Selecciona un cliente', value: '0' },
 	order_quotation: '',
 	emp_id: { name: '', id: 0 },
 	date: new Date(),
 	limit_date: new Date(),
-	status: { label: '', value: '' },
+	status: { label: 'Selecciona un estado', value: '0' },
 	history: '',
 	comments: '',
 	items: [],
@@ -144,6 +146,8 @@ export default function MaterialRequest() {
 	const [error, setError] = useState(false);
 	const [res, setRes] = useState('');
 	const session = useSession();
+	const { modalIsOpen, modalMessage, openModal, closeModal, handleConfirm } =
+		useModal();
 
 	const postNewSm = async () => {
 		const data = {
@@ -583,19 +587,25 @@ export default function MaterialRequest() {
 					</button>
 					<button
 						className="px-4 py-2 bg-cyan-700 rounded-md text-neutral-800 font-semibold tracking-wider"
-						onClick={postNewSm}
+						onClick={() =>
+							openModal('¿Estás seguro de agregar la solicitud?', postNewSm)
+						}
 					>
 						Agregar Solicitud
 					</button>
 					<button
 						className="px-4 py-2 bg-cyan-700 rounded-md text-neutral-800 font-semibold tracking-wider"
-						onClick={putNewSm}
+						onClick={() =>
+							openModal('¿Estás seguro de actualizar la solicitud?', putNewSm)
+						}
 					>
 						Actualizar Solicitud
 					</button>
 					<button
 						className="px-4 py-2 bg-[#cecece] rounded-md text-red-500 border border-red-500 font-semibold tracking-wider"
-						onClick={deleteSm}
+						onClick={() =>
+							openModal('¿Estás seguro de eliminar la solicitud?', deleteSm)
+						}
 					>
 						Eliminar Solicitud
 					</button>
@@ -617,6 +627,12 @@ export default function MaterialRequest() {
 					/>
 				)}
 			</div>
+			<CustomModal
+				isOpen={modalIsOpen}
+				onRequestClose={closeModal}
+				onConfirm={handleConfirm}
+				message={modalMessage}
+			/>
 		</section>
 	);
 }

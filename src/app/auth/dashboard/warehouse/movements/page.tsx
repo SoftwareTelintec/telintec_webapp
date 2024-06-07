@@ -1,6 +1,9 @@
 'use client';
 
-import { TextInput } from '@/app/components';
+import { CalendarSelector, MySelect, TextInput } from '@/app/components';
+import CustomModal from '@/app/components/ui/CustomModal';
+import useModal from '@/app/hooks/useModal';
+import { formatDate } from '@/utils';
 import axios from 'axios';
 import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useState } from 'react';
@@ -47,23 +50,52 @@ const columns = [
 	},
 ];
 
+const movementsOptions = [
+	{
+		value: '0',
+		label: 'entrada',
+	},
+	{
+		value: '1',
+		label: 'salida',
+	},
+];
+
 interface Movement {
 	id: number;
 	id_product: number;
-	type_m: string;
+	type_m: {
+		value: string;
+		label: string;
+	};
 	quantity: number;
 	movement_date: Date;
 	sm_id: number;
 	previous_q: null;
 }
 
+const INITIAL_MOVEMENT: Movement = {
+	id: 0,
+	id_product: 0,
+	type_m: {
+		value: '0',
+		label: 'entrada',
+	},
+	quantity: 0,
+	movement_date: new Date(),
+	sm_id: 0,
+	previous_q: null,
+};
+
 function MovementsPage() {
 	const [ins, setIns] = useState<Array<Movement>>([]);
 	const [outs, setOuts] = useState<Array<Movement>>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string>('');
-	const [movement, setMovement] = useState<Movement>();
+	const [movement, setMovement] = useState<Movement>(INITIAL_MOVEMENT);
 	const [showTable, setShowTable] = useState(false);
+	const { modalIsOpen, modalMessage, openModal, closeModal, handleConfirm } =
+		useModal();
 
 	const postNewMovement = async () => {
 		const data = {
@@ -72,7 +104,7 @@ function MovementsPage() {
 				id_product: movement?.id_product,
 				type_m: movement?.type_m,
 				quantity: movement?.quantity,
-				movement_date: movement?.movement_date,
+				movement_date: formatDate(movement?.movement_date),
 				sm_id: movement?.sm_id,
 				previous_q: movement?.previous_q,
 			},
@@ -95,7 +127,7 @@ function MovementsPage() {
 				id_product: Number(movement?.id_product),
 				type_m: String(movement?.type_m),
 				quantity: Number(movement?.quantity),
-				movement_date: movement?.movement_date,
+				movement_date: formatDate(movement?.movement_date),
 				sm_id: Number(movement?.sm_id),
 				previous_q: movement?.previous_q || 0,
 			},
@@ -174,7 +206,7 @@ function MovementsPage() {
 		setMovement({
 			id: 0,
 			id_product: 0,
-			type_m: '',
+			type_m: movementsOptions[0],
 			quantity: 0,
 			movement_date: new Date(),
 			sm_id: 0,
@@ -184,6 +216,21 @@ function MovementsPage() {
 
 	const hadleShowTable = () => {
 		setShowTable(!showTable);
+	};
+
+	const handleMovementChange = (selectedOption: {
+		value: string;
+		label: string;
+	}) => {
+		const { value } = selectedOption;
+		setMovement({
+			...movement,
+			type_m: movementsOptions.find((employee) => employee.value === value),
+		});
+	};
+
+	const handleDate = (date: Date) => {
+		setMovement({ ...movement, movement_date: date });
 	};
 
 	useEffect(() => {
@@ -207,12 +254,16 @@ function MovementsPage() {
 					onChange={(e) => handleInputChange(e)}
 					defaultValue={movement?.id_product ? String(movement.id_product) : ''}
 				/>
-				<TextInput
+				<MySelect
 					label="Tipo de movimiento"
-					name="type_m"
-					placeholder="Entrada / Salida"
-					onChange={(e) => handleInputChange(e)}
-					defaultValue={movement?.type_m ? movement.type_m : ''}
+					placeholder="Tipo de movimiento"
+					options={movementsOptions}
+					value={
+						movement?.type_m
+							? movement.type_m
+							: { label: 'Selecciona un movimiento', value: '0' }
+					}
+					onChange={handleMovementChange}
 				/>
 				<TextInput
 					label="Cantidad de movimiento"
@@ -221,14 +272,10 @@ function MovementsPage() {
 					onChange={(e) => handleInputChange(e)}
 					defaultValue={movement?.quantity ? String(movement.quantity) : ''}
 				/>
-				<TextInput
-					label="Fecha de movimiento"
-					name="movement_date"
-					placeholder="Ejemplo: 2024-04-03"
-					onChange={(e) => handleInputChange(e)}
-					defaultValue={
-						movement?.movement_date ? String(movement.movement_date) : ''
-					}
+				<CalendarSelector
+					label="Fecha"
+					selectedDate={movement?.movement_date}
+					onChange={handleDate}
 				/>
 				<TextInput
 					label="ID de SM"
@@ -260,19 +307,34 @@ function MovementsPage() {
 					</button>
 					<button
 						className="px-4 py-2 bg-cyan-700 rounded-md text-neutral-800 font-semibold tracking-wider"
-						onClick={postNewMovement}
+						onClick={() =>
+							openModal(
+								'¿Estás seguro de agregar la solicitud?',
+								postNewMovement
+							)
+						}
 					>
 						Agregar Entrada
 					</button>
 					<button
 						className="px-4 py-2 bg-cyan-700 rounded-md text-neutral-800 font-semibold tracking-wider"
-						onClick={updateMovement}
+						onClick={() =>
+							openModal(
+								'¿Estás seguro de actualizar la solicitud?',
+								updateMovement
+							)
+						}
 					>
 						Actualizar Entrada
 					</button>
 					<button
 						className="px-4 py-2 bg-[#cecece] rounded-md text-red-500 border border-red-500 font-semibold tracking-wider"
-						onClick={deleteMovement}
+						onClick={() =>
+							openModal(
+								'¿Estás seguro de eliminar la solicitud?',
+								deleteMovement
+							)
+						}
 					>
 						Eliminar Entrada
 					</button>
@@ -294,6 +356,12 @@ function MovementsPage() {
 					/>
 				)}
 			</div>
+			<CustomModal
+				isOpen={modalIsOpen}
+				onRequestClose={closeModal}
+				onConfirm={handleConfirm}
+				message={modalMessage}
+			/>
 		</section>
 	);
 }
