@@ -11,8 +11,8 @@ const AssistanModal: React.FC<AsistenteVirtualProps> = ({ roles }) => {
 	const [chatHistory, setChatHistory] = useState<
 		{ user: string; bot: string }[]
 	>([]);
-	const [isLoading, setIsLoading] = useState(false); // Estado para manejar el spinner de carga
-	const chatEndRef = useRef<HTMLDivElement>(null); // Ref para el elemento final del chat
+	const [isLoading, setIsLoading] = useState(false);
+	const chatEndRef = useRef<HTMLDivElement>(null);
 
 	const handleToggleModal = () => {
 		setIsOpen(!isOpen);
@@ -26,7 +26,7 @@ const AssistanModal: React.FC<AsistenteVirtualProps> = ({ roles }) => {
 		const userMessage = inputValue.trim();
 		if (userMessage === '') return;
 
-		setIsLoading(true); // Mostrar el spinner cuando se envía el mensaje
+		setIsLoading(true);
 
 		const payload = {
 			msg: userMessage,
@@ -35,6 +35,7 @@ const AssistanModal: React.FC<AsistenteVirtualProps> = ({ roles }) => {
 			files: [],
 			id: 0,
 		};
+
 		try {
 			const response = await axios.post(
 				`${process.env.NEXT_PUBLIC_API_HOST}/misc/AV/response`,
@@ -53,13 +54,12 @@ const AssistanModal: React.FC<AsistenteVirtualProps> = ({ roles }) => {
 				{ user: userMessage, bot: 'Error, could not get response from server' },
 			]);
 		} finally {
-			setIsLoading(false); // Ocultar el spinner una vez que se reciba la respuesta
+			setIsLoading(false);
 		}
 
 		setInputValue('');
 	};
 
-	// Efecto para desplazarse hacia abajo cuando el historial de chat cambia
 	useEffect(() => {
 		if (chatEndRef.current) {
 			chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -106,7 +106,7 @@ const AssistanModal: React.FC<AsistenteVirtualProps> = ({ roles }) => {
 											</p>
 										</div>
 									))}
-									{isLoading && ( // Spinner de carga
+									{isLoading && (
 										<div className="flex justify-center p-4">
 											<div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-6 w-6"></div>
 										</div>
