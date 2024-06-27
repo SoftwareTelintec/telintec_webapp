@@ -113,7 +113,7 @@ const Navigation = () => {
 				variants={containerVariants}
 				animate={containerControls}
 				initial="close"
-				className={`hidden lg:flex flex-col z-10 gap-12 p-5 absolute top-0 left-0 min-h-screen h-[4] shadow transition-colors duration-300 ${
+				className={`hidden lg:flex flex-col z-10 gap-12 p-5 fixed top-0 left-0 min-h-screen h-[4] shadow transition-colors duration-300 ${
 					isOpen
 						? 'bg-[#D9D9D9]  shadow-neutral-600'
 						: 'bg-[#D9D9D9]/70 shadow-[##5C5F65]/50'
