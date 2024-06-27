@@ -1,20 +1,48 @@
-import type { Config } from "tailwindcss";
+import type { Config } from 'tailwindcss';
+const { fontFamily } = require('tailwindcss/defaultTheme');
 
-const config: Config = {
-  content: [
-    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
-  ],
-  theme: {
-    extend: {
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
-      },
-    },
-  },
-  plugins: [],
-};
+const config = {
+	darkMode: ['class'],
+	content: [
+		'./pages/**/*.{ts,tsx}',
+		'./components/**/*.{ts,tsx}',
+		'./app/**/*.{ts,tsx}',
+		'./src/**/*.{ts,tsx}',
+	],
+	prefix: '',
+	theme: {
+		container: {
+			center: true,
+			padding: '2rem',
+			screens: {
+				'2xl': '1400px',
+			},
+		},
+		extend: {
+			fontFamily: {
+				sans: ['var(--font-sans)', ...fontFamily.sans],
+			},
+			backgroundImage: {
+				'svg-pattern': 'url(/img/svg-pattern.svg)',
+				'svg-robot': 'url(/img/robot-svg-bg.svg)',
+			},
+			backgroundPosition: {
+				'bottom-right': 'bottom right',
+				'bottom-center': 'bottom center',
+			},
+			animation: {
+				'robot-move': 'robot-move 5s infinite linear',
+			},
+			keyframes: {
+				'robot-move': {
+					'0%': { transform: 'translateX(0)' },
+					'50%': { transform: 'translateX(10px)' },
+					'100%': { transform: 'translateX(0)' },
+				},
+			},
+		},
+	},
+	plugins: [require('tailwindcss-animate')],
+} satisfies Config;
+
 export default config;

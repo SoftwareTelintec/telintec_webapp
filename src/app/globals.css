@@ -3,31 +3,156 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+	--radial-gradient-background: 81, 81, 81;
+	--solid-color-background: 89, 112, 211;
+	--overlay-color: 255, 255, 255;
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+	@apply bg-[#050b22];
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+.bg-svg-robot {
+	background-image: url('/img/robot-svg-bg.svg');
+	background-repeat: no-repeat;
+	background-size: contain;
+}
+
+.radial-gradient {
+	background: radial-gradient(
+			circle at 50% 0%,
+			rgba(var(--radial-gradient-background), 0.05) 0%,
+			transparent 60%
+		)
+		rgba(var(--solid-color-background), 1);
+}
+
+.linear-mask {
+	mask-image: linear-gradient(
+		-75deg,
+		white calc(var(--x) + 20%),
+		transparent calc(var(--x) + 30%),
+		white calc(var(--x) + 100%)
+	);
+	-webkit-mask-image: linear-gradient(
+		-75deg,
+		white calc(var(--x) + 20%),
+		transparent calc(var(--x) + 30%),
+		white calc(var(--x) + 100%)
+	);
+}
+
+.linear-overlay {
+	background-image: linear-gradient(
+		-75deg,
+		rgba(var(--overlay-color), 0.1) calc(var(--x) + 20%),
+		rgba(var(--overlay-color), 0.5) calc(var(--x) + 25%),
+		rgba(var(--overlay-color), 0.1) calc(var(--x) + 100%)
+	);
+	mask: linear-gradient(black, black) content-box, linear-gradient(black, black);
+	-webkit-mask: linear-gradient(black, black) content-box,
+		linear-gradient(black, black);
+	mask-composite: exclude;
+	-webkit-mask-composite: xor;
+}
+
+.animate {
+	animation: movePath 4s ease-in-out infinite alternate;
+}
+
+@keyframes movePath {
+	0% {
+		transform: translateX(0);
+	}
+	100% {
+		transform: translateX(100px);
+	}
+}
+
+.modal {
+	background: white;
+	padding: 20px;
+	border-radius: 10px;
+	width: 400px;
+	max-width: 90%;
+	margin: auto;
+}
+
+.overlay {
+	background: rgba(0, 0, 0, 0.5);
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.modal-content {
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+
+.modal-actions {
+	display: flex;
+	justify-content: space-between;
+}
+
+.confirm-button {
+	background: green;
+	color: white;
+	padding: 10px;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+.cancel-button {
+	background: red;
+	color: white;
+	padding: 10px;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+.loader {
+	border-top-color: #3498db;
+	-webkit-animation: spin 1s linear infinite;
+	/* Safari */
+	animation: spin 1s linear infinite;
+}
+
+.custom-radio:checked {
+	background-color: #4c51bf;
+	border-color: #4c51bf;
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+.loader {
+	border-top-color: transparent;
+	border-right-color: #3498db;
+	border-bottom-color: #3498db;
+	border-left-color: #3498db;
+	animation: spinner 0.6s linear infinite;
+}
+
+@keyframes spinner {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
 }
