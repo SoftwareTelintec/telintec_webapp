@@ -124,32 +124,22 @@ export const pagesPerRole = [
 	{
 		role: 'admin',
 		pages: [
-			// '/auth/dashboard',
-			// '/auth/dashboard/warehouse',
-			// '/auth/dashboard/rrhh',
-			// '/auth/dashboard/sm',
+			'/auth/dashboard',
+			'/auth/dashboard/warehouse',
+			'/auth/dashboard/sm',
+			'/auth/dashboard/warehouse',
+			'/auth/dashboard/rrhh',
+			'/auth/dashboard/sm',
 			'/auth/dashboard/logs',
 		],
 	},
 	{
 		role: 'almacen',
-		pages: [
-			// '/auth/dashboard',
-			// '/auth/dashboard/warehouse',
-			// '/auth/dashboard/sm',
-			// '/auth/dashboard',
-			// '/auth/dashboard/warehouse',
-			// '/auth/dashboard/rrhh',
-			// '/auth/dashboard/sm',
-			'/auth/dashboard/logs',
-		],
+		pages: ['/auth/dashboard', '/auth/dashboard/warehouse'],
 	},
 	{
 		role: 'rrhh',
-		pages: [
-			'/auth/dashboard',
-			// '/auth/dashboard/rrhh'
-		],
+		pages: ['/auth/dashboard', '/auth/dashboard/rrhh'],
 	},
 	{
 		role: 'bitacoras',
@@ -157,9 +147,6 @@ export const pagesPerRole = [
 	},
 	{
 		role: 'sm',
-		pages: [
-			'/auth/dashboard',
-			// '/auth/dashboard/sm'
-		],
+		pages: ['/auth/dashboard', '/auth/dashboard/sm'],
 	},
 ];

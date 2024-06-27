@@ -8,7 +8,7 @@ import debounce from 'lodash.debounce';
 import DataTable from 'react-data-table-component';
 import { useSession } from 'next-auth/react';
 import CustomModal from '@/app/components/ui/CustomModal';
-import { set } from 'react-hook-form';
+import useModal from '@/app/hooks/useModal';
 
 const contractsOptions = [
 	{
@@ -266,24 +266,8 @@ export default function LogsPage() {
 	const [error, setError] = useState();
 	const [showTable, setShowTable] = useState(false);
 	const [loading, setLoading] = useState(true);
-	const [modalIsOpen, setModalIsOpen] = useState(false);
-	const [modalMessage, setModalMessage] = useState('');
-	const [confirmAction, setConfirmAction] = useState(() => () => {});
-
-	const openModal = (message, action) => {
-		setModalMessage(message);
-		setConfirmAction(() => action);
-		setModalIsOpen(true);
-	};
-
-	const closeModal = () => {
-		setModalIsOpen(false);
-	};
-
-	const handleConfirm = () => {
-		confirmAction();
-		closeModal();
-	};
+	const { modalIsOpen, modalMessage, openModal, closeModal, handleConfirm } =
+		useModal();
 
 	const getAllEvents = async () => {
 		// ${process.env.${process.env.NEXT_PUBLIC_API_HOST}}
@@ -294,7 +278,6 @@ export default function LogsPage() {
 			},
 		})
 			.then((response) => {
-				console.log(response.data);
 				const responseData = response.data;
 				if (responseData && responseData.data && responseData.columns) {
 					const { data } = responseData;

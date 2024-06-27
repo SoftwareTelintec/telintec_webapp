@@ -1,6 +1,8 @@
 'use client';
 
 import { MySelect, TextInput } from '@/app/components';
+import CustomModal from '@/app/components/ui/CustomModal';
+import useModal from '@/app/hooks/useModal';
 import axios from 'axios';
 import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useState } from 'react';
@@ -89,12 +91,12 @@ const INITIAL_STATE = {
 	udm: '',
 	stock: 0,
 	category_name: {
-		label: '',
-		value: '',
+		value: '0',
+		label: 'Ingresa una categoría',
 	},
 	supplier_name: {
-		label: '',
-		value: '',
+		value: '0',
+		label: 'Ingresa un proveedor',
 	},
 	is_tool: 0,
 	is_internal: 0,
@@ -109,6 +111,8 @@ function InventoryPage() {
 	const [showTable, setShowTable] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [res, setRes] = useState<any>();
+	const { modalIsOpen, modalMessage, openModal, closeModal, handleConfirm } =
+		useModal();
 
 	const getAllCategories = async () => {
 		await axios
@@ -405,19 +409,34 @@ function InventoryPage() {
 					</button>
 					<button
 						className="px-4 py-2 bg-cyan-700 rounded-md text-neutral-800 font-semibold tracking-wider"
-						onClick={postNewProduct}
+						onClick={() =>
+							openModal(
+								'¿Estás seguro de agregar este producto?',
+								postNewProduct
+							)
+						}
 					>
 						Agregar Producto
 					</button>
 					<button
 						className="px-4 py-2 bg-cyan-700 rounded-md text-neutral-800 font-semibold tracking-wider"
-						onClick={updateProduct}
+						onClick={() =>
+							openModal(
+								'¿Estás seguro de actualizar este producto?',
+								updateProduct
+							)
+						}
 					>
 						Actualizar Producto
 					</button>
 					<button
 						className="px-4 py-2 bg-[#cecece] rounded-md text-red-500 border border-red-500 font-semibold tracking-wider"
-						onClick={deleteProduct}
+						onClick={() =>
+							openModal(
+								'¿Estás seguro de eliminar este producto?',
+								deleteProduct
+							)
+						}
 					>
 						Eliminar Producto
 					</button>
@@ -439,6 +458,12 @@ function InventoryPage() {
 					/>
 				)}
 			</div>
+			<CustomModal
+				isOpen={modalIsOpen}
+				onRequestClose={closeModal}
+				onConfirm={handleConfirm}
+				message={modalMessage}
+			/>
 		</section>
 	);
 }
