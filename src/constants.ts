@@ -20,10 +20,14 @@ export const pagesPerRole = [
 	},
 	{
 		role: 'bitacoras',
-		pages: ['/auth/dashboard', '/auth/logs'],
+		// no tiene asistente ni dashboard
+		pages: ['/auth/logs'],
 	},
 	{
 		role: 'sm',
-		pages: ['/auth/dashboard', '/auth/sm'],
+		// no tiene asistente ni dashboard
+		pages: ['/auth/sm'],
 	},
 ];
+
+// dashboard solo almaacen, sm y admn

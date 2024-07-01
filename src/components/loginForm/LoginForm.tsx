@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Button, Alert, CustomInput } from '@/components';
 import { debounce } from '@/lib/utils';
-import { FormData } from '@/types/loginData';
+import { FormData } from '@/types/types';
 import { signIn, useSession } from 'next-auth/react';
 import { redirect } from 'next/navigation';
 
@@ -70,12 +70,14 @@ const LoginForm: React.FC = () => {
 		>
 			<CustomInput
 				id="username"
+				label="Nombre de usuario"
 				type="text"
 				value={formData.username}
 				handleDataChange={handleDataChange}
 			/>
 			<CustomInput
 				id="password"
+				label="Contraseña"
 				type="password"
 				value={formData.password}
 				handleDataChange={handleDataChange}

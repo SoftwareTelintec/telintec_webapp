@@ -2,6 +2,8 @@ import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { CustomInput } from '@/components/ui/CustomInput';
 import { CustomModal } from '@/components/ui/CustomModal';
+import { CustomSelect } from '@/components/ui/CustomSelect';
+import { CustomSwitch } from '@/components/ui/CustomSwitch';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Loader } from '@/components/ui/Loader';
@@ -24,4 +26,6 @@ export {
 	NavigationLink,
 	ProjectLink,
 	ProjectNavigation,
+	CustomSelect,
+	CustomSwitch,
 };

@@ -87,3 +87,55 @@ export const smColumns = [
 		width: '300px',
 	},
 ];
+
+export const movementsColumns = [
+	{
+		name: 'ID',
+		selector: (row: any) => row.id,
+		width: '50px',
+	},
+	{
+		name: 'Nombre',
+		selector: (row: any) => row.name,
+		width: '300px',
+	},
+	{
+		name: 'SKU',
+		selector: (row: any) => row.sku,
+		width: '150px',
+	},
+	{
+		name: 'UDM',
+		selector: (row: any) => row.udm,
+		width: '100px',
+	},
+	{
+		name: 'Stock',
+		selector: (row: any) => row.stock,
+		width: '100px',
+	},
+	{
+		name: 'Categoria',
+		selector: (row: any) => row.category_name,
+		width: '120px',
+		sortable: true,
+	},
+	{
+		name: 'Proveedor',
+		selector: (row: any) => row.supplier_name,
+		width: '120px',
+		sortable: true,
+	},
+	{
+		name: 'Herramienta',
+		selector: (row: any) => row.is_tool,
+		sortable: true,
+		width: '120px',
+	},
+	{
+		name: 'Interno',
+		selector: (row: any) => row.is_internal,
+		sortable: true,
+		width: '120px',
+	},
+];

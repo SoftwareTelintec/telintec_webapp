@@ -69,15 +69,6 @@ body {
 	}
 }
 
-.modal {
-	background: white;
-	padding: 20px;
-	border-radius: 10px;
-	width: 400px;
-	max-width: 90%;
-	margin: auto;
-}
-
 .overlay {
 	background: rgba(0, 0, 0, 0.5);
 	position: fixed;
@@ -88,42 +79,6 @@ body {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-}
-
-.modal-content {
-	display: flex;
-	flex-direction: column;
-	gap: 15px;
-}
-
-.modal-actions {
-	display: flex;
-	justify-content: space-between;
-}
-
-.confirm-button {
-	background: green;
-	color: white;
-	padding: 10px;
-	border: none;
-	border-radius: 5px;
-	cursor: pointer;
-}
-
-.cancel-button {
-	background: red;
-	color: white;
-	padding: 10px;
-	border: none;
-	border-radius: 5px;
-	cursor: pointer;
-}
-
-.loader {
-	border-top-color: #3498db;
-	-webkit-animation: spin 1s linear infinite;
-	/* Safari */
-	animation: spin 1s linear infinite;
 }
 
 .custom-radio:checked {
